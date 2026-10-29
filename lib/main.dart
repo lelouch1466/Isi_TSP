@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:isi_tsp/screens/home_isi.dart';
+import 'package:isi_tsp/presentation/components/barra_app.dart';
+import 'package:isi_tsp/presentation/screens/home_isi.dart';
+import 'package:isi_tsp/presentation/screens/question_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -12,10 +14,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text("Perritos malvados, perritos encarcelados"),
-        ),
+        //body: QuestionScreen(),
         body: HomeIsi(),
 
       ),
