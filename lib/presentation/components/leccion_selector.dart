@@ -5,11 +5,13 @@ import 'package:isi_tsp/presentation/core/text_styles.dart';
 class LeccionSelector extends StatefulWidget {
   final bool seleccionado;
   final Function() cambio_seleccion;
+  final String nombre_boton;
 
   const LeccionSelector({
     super.key,
     required this.seleccionado,
     required this.cambio_seleccion,
+     required this.nombre_boton,
   });
 
   @override
@@ -39,7 +41,7 @@ class _LeccionSelectorState extends State<LeccionSelector> {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
-                  children: [Text("data", style: TextStyles.bodyText)],
+                  children: [Text(widget.nombre_boton, style: TextStyles.bodyText)],
                 ),
               ),
             ),

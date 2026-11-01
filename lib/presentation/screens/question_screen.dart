@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:isi_tsp/domain/question.dart';
 import 'package:isi_tsp/presentation/components/answer_selector.dart';
 import 'package:isi_tsp/presentation/components/barra_app.dart';
+import 'package:isi_tsp/presentation/components/result_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/core/text_styles.dart';
 
@@ -29,12 +30,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
       //cuerpo de la pantalla
       body: Column(
         children: [
-
           //el titulo de la pregunta
           Padding(
             padding: const EdgeInsets.only(top: 30),
             child: Text(
               "El index es ${index.toString()} y la pregunta es ${listado[index].titulo}",
+              style: TextStyles.pregunta,
             ),
           ),
 
@@ -67,13 +68,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
       ),
 
       //Boton de siguiente
-      floatingActionButton: nextButon(),
+      floatingActionButton: nextButon(listado.length),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  //===============================*======================================
-  //===============================*======================================
+//===============================*======================================
+//===============================*======================================
   AppBar barra_app() {
     return AppBar(
       backgroundColor: Appcolors.barraap,
@@ -91,28 +92,41 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   //cosas con el boton de siguiente
-  GestureDetector nextButon() {
+  GestureDetector nextButon(int numero_preguntas) {
     return GestureDetector(
       //logica
       onTap: () {
         setState(() {
           //si el index es menor y tiene opcion tomada
-          if (index < 1 && opcion_tomada) {
+          if (index < numero_preguntas - 1 && opcion_tomada) {
             index++;
             if (opcion_correcta1!) {
               puntaje++;
             }
             opcion_tomada = false;
             //si el index es igual al numero de preguntas y tiene opcion tomada
-          //}else if{
-              
-
+          } else if (index == numero_preguntas - 1 && opcion_tomada) {
+            if (opcion_correcta1!) {
+              puntaje++;
+            }
+            //pantalla de resultado
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (ctx) => ResultBox(
+                puntaje_final: puntaje,
+                total_preguntas: numero_preguntas,
+                reinicio: () {
+                  boton_reinicio();
+                },
+              ),
+            );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text("selecciona una opcion"),
                 behavior: SnackBarBehavior.floating,
-                margin: EdgeInsets.symmetric(vertical: 70),
+                //margin: EdgeInsets.symmetric(vertical: 70),
               ),
             );
           }
@@ -134,6 +148,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
         ),
       ),
     );
+  }
+
+  void boton_reinicio() {
+    setState(() {
+      index = 0;
+      opcion_tomada = false;
+      opcion_correcta1;
+      puntaje = 0;
+    });
+    Navigator.pop(context);
   }
 
   //inicializacion de un cuestionario
