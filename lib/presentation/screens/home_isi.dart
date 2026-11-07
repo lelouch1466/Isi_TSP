@@ -40,9 +40,9 @@ class _HomeIsiState extends State<HomeIsi> {
             padding: const EdgeInsets.all(8.0),
             child: insertarBoton(3, "modulo 3"),
           ),
-      
+
           Spacer(),
-      
+
           //boton de siguiente
           Padding(
             padding: EdgeInsets.all(16),
@@ -61,15 +61,18 @@ class _HomeIsiState extends State<HomeIsi> {
                   if (ultima_seleccion != null) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => QuestionScreen()),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            QuestionScreen(modulo: ultima_seleccion!),
+                      ),
                     );
                   } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
                         content: Text("selecciona una opcion"),
                         behavior: SnackBarBehavior.floating,
                         margin: EdgeInsets.symmetric(vertical: 70),
-                        ),
+                      ),
                     );
                   }
                 },

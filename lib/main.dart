@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isi_tsp/presentation/components/barra_app.dart';
 import 'package:isi_tsp/presentation/screens/home_isi.dart';
+import 'package:isi_tsp/presentation/screens/leccion_map.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
 
 void main() {
@@ -16,6 +17,7 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         //body: QuestionScreen(),
         body: HomeIsi(),
+        //body: LeccionMap(),
 
       ),
     );
