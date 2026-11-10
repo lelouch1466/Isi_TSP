@@ -9,5 +9,5 @@ class Appcolors {
   static const Color barraap = Color(0xFF9DB6F6);
   static const Color opcionseleccion = Color.fromARGB(255, 147, 148, 150);
   static const Color opciones = Color.fromARGB(255, 227, 229, 231);
-
+  static const Color bloqueado = Color(0xFFB0B0B0);
 }

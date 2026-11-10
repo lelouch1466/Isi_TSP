@@ -6,12 +6,14 @@ class LeccionSelector extends StatefulWidget {
   final bool seleccionado;
   final Function() cambio_seleccion;
   final String nombre_boton;
+  final bool bloqueado;
 
   const LeccionSelector({
     super.key,
     required this.seleccionado,
     required this.cambio_seleccion,
-     required this.nombre_boton,
+    required this.nombre_boton,
+    required this.bloqueado,
   });
 
   @override
@@ -28,12 +30,16 @@ class _LeccionSelectorState extends State<LeccionSelector> {
           child: GestureDetector(
             //que se cambie de color al ser seleccionado
             onTap: () {
+              //si esta bloqueado no hace nada
+              if (widget.bloqueado) return;
               widget.cambio_seleccion();
             },
             //tolo lo que tenga de ver con visualizacion
             child: Container(
               decoration: BoxDecoration(
-                color: widget.seleccionado
+                color: widget.bloqueado
+                    ? Appcolors.bloqueado
+                    : widget.seleccionado
                     ? Appcolors.seleccionado
                     : Appcolors.primario,
                 borderRadius: BorderRadius.circular(10),
@@ -41,7 +47,9 @@ class _LeccionSelectorState extends State<LeccionSelector> {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
-                  children: [Text(widget.nombre_boton, style: TextStyles.bodyText)],
+                  children: [
+                    Text(widget.nombre_boton, style: TextStyles.bodyText),
+                  ],
                 ),
               ),
             ),

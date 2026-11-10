@@ -22,7 +22,7 @@ class ResultBox extends StatelessWidget {
       child: AlertDialog(
         //visuales de caja
         backgroundColor: Appcolors.secundario,
-      
+
         //cosas dentro de la caja
         content: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -59,7 +59,8 @@ class ResultBox extends StatelessWidget {
                   ),
                 ),
               ),
-              //---------------------*----------------------------
+              //-------------------------------------------------
+              //boton reinicio
               SizedBox(height: 20),
               FloatingActionButton(
                 onPressed: reinicio,
@@ -67,13 +68,40 @@ class ResultBox extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-      
+
                 child: Icon(Icons.restart_alt),
               ),
-      
+              //---------------------*----------------------------
+              //boton regresar a leccion
+              SizedBox(height: 20),
+              // Botón de salir
+              TextButton.icon(
+                onPressed: () {
+                  //1er pop cierra el ResultBox (el dialogo es otra ruta)
+                  //2do pop cierra QuestionScreen y regresa al mapa
+                  Navigator.of(context)
+                    ..pop()
+                    ..pop();
+                },
+
+                icon: Icon(
+                  calificar_puntaje() ? Icons.check : Icons.keyboard_return,
+                ),
+                label: Text(
+                  calificar_puntaje() ? "Aceptar" : "Regresar al Mapa",
+                ),
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 231, 232, 235),
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+
               //---------------------*----------------------------
               const SizedBox(height: 30),
-      
+
               // Botón de salir
               TextButton.icon(
                 onPressed: () {
@@ -83,7 +111,7 @@ class ResultBox extends StatelessWidget {
                     (Route<dynamic> route) => false,
                   );
                 },
-      
+
                 icon: const Icon(Icons.exit_to_app),
                 label: const Text("Salir"),
                 style: TextButton.styleFrom(
@@ -99,5 +127,9 @@ class ResultBox extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool calificar_puntaje() {
+    return (puntaje_final * 100 / total_preguntas) >= 80;
   }
 }
