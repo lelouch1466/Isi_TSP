@@ -11,4 +11,8 @@ abstract class ModulosRepositorio {
 
   // marca el modulo como desbloqueado
   Future<void> desbloquearModulo(int moduloId);
+
+  // true si el siguiente modulo esta bloqueado, false si no,
+  // null si el modulo enviado es el ultimo
+  Future<bool?> siguienteModuloBloqueado(int moduloId);
 }

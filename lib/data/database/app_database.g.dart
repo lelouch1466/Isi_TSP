@@ -32,6 +32,18 @@ class $ModulosTable extends Modulos with TableInfo<$ModulosTable, ModuloData> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _descripcionMeta = const VerificationMeta(
+    'descripcion',
+  );
+  @override
+  late final GeneratedColumn<String> descripcion = GeneratedColumn<String>(
+    'descripcion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _bloqueadoMeta = const VerificationMeta(
     'bloqueado',
   );
@@ -48,7 +60,12 @@ class $ModulosTable extends Modulos with TableInfo<$ModulosTable, ModuloData> {
     defaultValue: const Constant(true),
   );
   @override
-  List<GeneratedColumn> get $columns => [idModulo, nombre, bloqueado];
+  List<GeneratedColumn> get $columns => [
+    idModulo,
+    nombre,
+    descripcion,
+    bloqueado,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -75,6 +92,15 @@ class $ModulosTable extends Modulos with TableInfo<$ModulosTable, ModuloData> {
     } else if (isInserting) {
       context.missing(_nombreMeta);
     }
+    if (data.containsKey('descripcion')) {
+      context.handle(
+        _descripcionMeta,
+        descripcion.isAcceptableOrUnknown(
+          data['descripcion']!,
+          _descripcionMeta,
+        ),
+      );
+    }
     if (data.containsKey('bloqueado')) {
       context.handle(
         _bloqueadoMeta,
@@ -98,6 +124,10 @@ class $ModulosTable extends Modulos with TableInfo<$ModulosTable, ModuloData> {
         DriftSqlType.string,
         data['${effectivePrefix}nombre'],
       )!,
+      descripcion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}descripcion'],
+      )!,
       bloqueado: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}bloqueado'],
@@ -114,10 +144,12 @@ class $ModulosTable extends Modulos with TableInfo<$ModulosTable, ModuloData> {
 class ModuloData extends DataClass implements Insertable<ModuloData> {
   final int idModulo;
   final String nombre;
+  final String descripcion;
   final bool bloqueado;
   const ModuloData({
     required this.idModulo,
     required this.nombre,
+    required this.descripcion,
     required this.bloqueado,
   });
   @override
@@ -125,6 +157,7 @@ class ModuloData extends DataClass implements Insertable<ModuloData> {
     final map = <String, Expression>{};
     map['id_modulo'] = Variable<int>(idModulo);
     map['nombre'] = Variable<String>(nombre);
+    map['descripcion'] = Variable<String>(descripcion);
     map['bloqueado'] = Variable<bool>(bloqueado);
     return map;
   }
@@ -133,6 +166,7 @@ class ModuloData extends DataClass implements Insertable<ModuloData> {
     return ModulosCompanion(
       idModulo: Value(idModulo),
       nombre: Value(nombre),
+      descripcion: Value(descripcion),
       bloqueado: Value(bloqueado),
     );
   }
@@ -145,6 +179,7 @@ class ModuloData extends DataClass implements Insertable<ModuloData> {
     return ModuloData(
       idModulo: serializer.fromJson<int>(json['idModulo']),
       nombre: serializer.fromJson<String>(json['nombre']),
+      descripcion: serializer.fromJson<String>(json['descripcion']),
       bloqueado: serializer.fromJson<bool>(json['bloqueado']),
     );
   }
@@ -154,20 +189,29 @@ class ModuloData extends DataClass implements Insertable<ModuloData> {
     return <String, dynamic>{
       'idModulo': serializer.toJson<int>(idModulo),
       'nombre': serializer.toJson<String>(nombre),
+      'descripcion': serializer.toJson<String>(descripcion),
       'bloqueado': serializer.toJson<bool>(bloqueado),
     };
   }
 
-  ModuloData copyWith({int? idModulo, String? nombre, bool? bloqueado}) =>
-      ModuloData(
-        idModulo: idModulo ?? this.idModulo,
-        nombre: nombre ?? this.nombre,
-        bloqueado: bloqueado ?? this.bloqueado,
-      );
+  ModuloData copyWith({
+    int? idModulo,
+    String? nombre,
+    String? descripcion,
+    bool? bloqueado,
+  }) => ModuloData(
+    idModulo: idModulo ?? this.idModulo,
+    nombre: nombre ?? this.nombre,
+    descripcion: descripcion ?? this.descripcion,
+    bloqueado: bloqueado ?? this.bloqueado,
+  );
   ModuloData copyWithCompanion(ModulosCompanion data) {
     return ModuloData(
       idModulo: data.idModulo.present ? data.idModulo.value : this.idModulo,
       nombre: data.nombre.present ? data.nombre.value : this.nombre,
+      descripcion: data.descripcion.present
+          ? data.descripcion.value
+          : this.descripcion,
       bloqueado: data.bloqueado.present ? data.bloqueado.value : this.bloqueado,
     );
   }
@@ -177,44 +221,51 @@ class ModuloData extends DataClass implements Insertable<ModuloData> {
     return (StringBuffer('ModuloData(')
           ..write('idModulo: $idModulo, ')
           ..write('nombre: $nombre, ')
+          ..write('descripcion: $descripcion, ')
           ..write('bloqueado: $bloqueado')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(idModulo, nombre, bloqueado);
+  int get hashCode => Object.hash(idModulo, nombre, descripcion, bloqueado);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ModuloData &&
           other.idModulo == this.idModulo &&
           other.nombre == this.nombre &&
+          other.descripcion == this.descripcion &&
           other.bloqueado == this.bloqueado);
 }
 
 class ModulosCompanion extends UpdateCompanion<ModuloData> {
   final Value<int> idModulo;
   final Value<String> nombre;
+  final Value<String> descripcion;
   final Value<bool> bloqueado;
   const ModulosCompanion({
     this.idModulo = const Value.absent(),
     this.nombre = const Value.absent(),
+    this.descripcion = const Value.absent(),
     this.bloqueado = const Value.absent(),
   });
   ModulosCompanion.insert({
     this.idModulo = const Value.absent(),
     required String nombre,
+    this.descripcion = const Value.absent(),
     this.bloqueado = const Value.absent(),
   }) : nombre = Value(nombre);
   static Insertable<ModuloData> custom({
     Expression<int>? idModulo,
     Expression<String>? nombre,
+    Expression<String>? descripcion,
     Expression<bool>? bloqueado,
   }) {
     return RawValuesInsertable({
       if (idModulo != null) 'id_modulo': idModulo,
       if (nombre != null) 'nombre': nombre,
+      if (descripcion != null) 'descripcion': descripcion,
       if (bloqueado != null) 'bloqueado': bloqueado,
     });
   }
@@ -222,11 +273,13 @@ class ModulosCompanion extends UpdateCompanion<ModuloData> {
   ModulosCompanion copyWith({
     Value<int>? idModulo,
     Value<String>? nombre,
+    Value<String>? descripcion,
     Value<bool>? bloqueado,
   }) {
     return ModulosCompanion(
       idModulo: idModulo ?? this.idModulo,
       nombre: nombre ?? this.nombre,
+      descripcion: descripcion ?? this.descripcion,
       bloqueado: bloqueado ?? this.bloqueado,
     );
   }
@@ -240,6 +293,9 @@ class ModulosCompanion extends UpdateCompanion<ModuloData> {
     if (nombre.present) {
       map['nombre'] = Variable<String>(nombre.value);
     }
+    if (descripcion.present) {
+      map['descripcion'] = Variable<String>(descripcion.value);
+    }
     if (bloqueado.present) {
       map['bloqueado'] = Variable<bool>(bloqueado.value);
     }
@@ -251,6 +307,7 @@ class ModulosCompanion extends UpdateCompanion<ModuloData> {
     return (StringBuffer('ModulosCompanion(')
           ..write('idModulo: $idModulo, ')
           ..write('nombre: $nombre, ')
+          ..write('descripcion: $descripcion, ')
           ..write('bloqueado: $bloqueado')
           ..write(')'))
         .toString();
@@ -1446,6 +1503,16 @@ class $TeoriasTable extends Teorias with TableInfo<$TeoriasTable, TeoriaData> {
       'REFERENCES pasos (id_paso)',
     ),
   );
+  static const VerificationMeta _paginaMeta = const VerificationMeta('pagina');
+  @override
+  late final GeneratedColumn<int> pagina = GeneratedColumn<int>(
+    'pagina',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
   static const VerificationMeta _escritoMeta = const VerificationMeta(
     'escrito',
   );
@@ -1458,7 +1525,13 @@ class $TeoriasTable extends Teorias with TableInfo<$TeoriasTable, TeoriaData> {
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [idTeoria, idModulo, idPaso, escrito];
+  List<GeneratedColumn> get $columns => [
+    idTeoria,
+    idModulo,
+    idPaso,
+    pagina,
+    escrito,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1493,6 +1566,12 @@ class $TeoriasTable extends Teorias with TableInfo<$TeoriasTable, TeoriaData> {
     } else if (isInserting) {
       context.missing(_idPasoMeta);
     }
+    if (data.containsKey('pagina')) {
+      context.handle(
+        _paginaMeta,
+        pagina.isAcceptableOrUnknown(data['pagina']!, _paginaMeta),
+      );
+    }
     if (data.containsKey('escrito')) {
       context.handle(
         _escritoMeta,
@@ -1522,6 +1601,10 @@ class $TeoriasTable extends Teorias with TableInfo<$TeoriasTable, TeoriaData> {
         DriftSqlType.int,
         data['${effectivePrefix}id_paso'],
       )!,
+      pagina: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pagina'],
+      )!,
       escrito: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}escrito'],
@@ -1539,11 +1622,13 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
   final int idTeoria;
   final int idModulo;
   final int idPaso;
+  final int pagina;
   final String escrito;
   const TeoriaData({
     required this.idTeoria,
     required this.idModulo,
     required this.idPaso,
+    required this.pagina,
     required this.escrito,
   });
   @override
@@ -1552,6 +1637,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
     map['id_teoria'] = Variable<int>(idTeoria);
     map['id_modulo'] = Variable<int>(idModulo);
     map['id_paso'] = Variable<int>(idPaso);
+    map['pagina'] = Variable<int>(pagina);
     map['escrito'] = Variable<String>(escrito);
     return map;
   }
@@ -1561,6 +1647,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
       idTeoria: Value(idTeoria),
       idModulo: Value(idModulo),
       idPaso: Value(idPaso),
+      pagina: Value(pagina),
       escrito: Value(escrito),
     );
   }
@@ -1574,6 +1661,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
       idTeoria: serializer.fromJson<int>(json['idTeoria']),
       idModulo: serializer.fromJson<int>(json['idModulo']),
       idPaso: serializer.fromJson<int>(json['idPaso']),
+      pagina: serializer.fromJson<int>(json['pagina']),
       escrito: serializer.fromJson<String>(json['escrito']),
     );
   }
@@ -1584,6 +1672,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
       'idTeoria': serializer.toJson<int>(idTeoria),
       'idModulo': serializer.toJson<int>(idModulo),
       'idPaso': serializer.toJson<int>(idPaso),
+      'pagina': serializer.toJson<int>(pagina),
       'escrito': serializer.toJson<String>(escrito),
     };
   }
@@ -1592,11 +1681,13 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
     int? idTeoria,
     int? idModulo,
     int? idPaso,
+    int? pagina,
     String? escrito,
   }) => TeoriaData(
     idTeoria: idTeoria ?? this.idTeoria,
     idModulo: idModulo ?? this.idModulo,
     idPaso: idPaso ?? this.idPaso,
+    pagina: pagina ?? this.pagina,
     escrito: escrito ?? this.escrito,
   );
   TeoriaData copyWithCompanion(TeoriasCompanion data) {
@@ -1604,6 +1695,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
       idTeoria: data.idTeoria.present ? data.idTeoria.value : this.idTeoria,
       idModulo: data.idModulo.present ? data.idModulo.value : this.idModulo,
       idPaso: data.idPaso.present ? data.idPaso.value : this.idPaso,
+      pagina: data.pagina.present ? data.pagina.value : this.pagina,
       escrito: data.escrito.present ? data.escrito.value : this.escrito,
     );
   }
@@ -1614,13 +1706,14 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
           ..write('idTeoria: $idTeoria, ')
           ..write('idModulo: $idModulo, ')
           ..write('idPaso: $idPaso, ')
+          ..write('pagina: $pagina, ')
           ..write('escrito: $escrito')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(idTeoria, idModulo, idPaso, escrito);
+  int get hashCode => Object.hash(idTeoria, idModulo, idPaso, pagina, escrito);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1628,6 +1721,7 @@ class TeoriaData extends DataClass implements Insertable<TeoriaData> {
           other.idTeoria == this.idTeoria &&
           other.idModulo == this.idModulo &&
           other.idPaso == this.idPaso &&
+          other.pagina == this.pagina &&
           other.escrito == this.escrito);
 }
 
@@ -1635,17 +1729,20 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
   final Value<int> idTeoria;
   final Value<int> idModulo;
   final Value<int> idPaso;
+  final Value<int> pagina;
   final Value<String> escrito;
   const TeoriasCompanion({
     this.idTeoria = const Value.absent(),
     this.idModulo = const Value.absent(),
     this.idPaso = const Value.absent(),
+    this.pagina = const Value.absent(),
     this.escrito = const Value.absent(),
   });
   TeoriasCompanion.insert({
     this.idTeoria = const Value.absent(),
     required int idModulo,
     required int idPaso,
+    this.pagina = const Value.absent(),
     required String escrito,
   }) : idModulo = Value(idModulo),
        idPaso = Value(idPaso),
@@ -1654,12 +1751,14 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
     Expression<int>? idTeoria,
     Expression<int>? idModulo,
     Expression<int>? idPaso,
+    Expression<int>? pagina,
     Expression<String>? escrito,
   }) {
     return RawValuesInsertable({
       if (idTeoria != null) 'id_teoria': idTeoria,
       if (idModulo != null) 'id_modulo': idModulo,
       if (idPaso != null) 'id_paso': idPaso,
+      if (pagina != null) 'pagina': pagina,
       if (escrito != null) 'escrito': escrito,
     });
   }
@@ -1668,12 +1767,14 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
     Value<int>? idTeoria,
     Value<int>? idModulo,
     Value<int>? idPaso,
+    Value<int>? pagina,
     Value<String>? escrito,
   }) {
     return TeoriasCompanion(
       idTeoria: idTeoria ?? this.idTeoria,
       idModulo: idModulo ?? this.idModulo,
       idPaso: idPaso ?? this.idPaso,
+      pagina: pagina ?? this.pagina,
       escrito: escrito ?? this.escrito,
     );
   }
@@ -1690,6 +1791,9 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
     if (idPaso.present) {
       map['id_paso'] = Variable<int>(idPaso.value);
     }
+    if (pagina.present) {
+      map['pagina'] = Variable<int>(pagina.value);
+    }
     if (escrito.present) {
       map['escrito'] = Variable<String>(escrito.value);
     }
@@ -1702,6 +1806,7 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
           ..write('idTeoria: $idTeoria, ')
           ..write('idModulo: $idModulo, ')
           ..write('idPaso: $idPaso, ')
+          ..write('pagina: $pagina, ')
           ..write('escrito: $escrito')
           ..write(')'))
         .toString();
@@ -2312,12 +2417,14 @@ typedef $$ModulosTableCreateCompanionBuilder =
     ModulosCompanion Function({
       Value<int> idModulo,
       required String nombre,
+      Value<String> descripcion,
       Value<bool> bloqueado,
     });
 typedef $$ModulosTableUpdateCompanionBuilder =
     ModulosCompanion Function({
       Value<int> idModulo,
       Value<String> nombre,
+      Value<String> descripcion,
       Value<bool> bloqueado,
     });
 
@@ -2432,6 +2539,11 @@ class $$ModulosTableFilterComposer
 
   ColumnFilters<String> get nombre => $composableBuilder(
     column: $table.nombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2585,6 +2697,11 @@ class $$ModulosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get bloqueado => $composableBuilder(
     column: $table.bloqueado,
     builder: (column) => ColumnOrderings(column),
@@ -2605,6 +2722,11 @@ class $$ModulosTableAnnotationComposer
 
   GeneratedColumn<String> get nombre =>
       $composableBuilder(column: $table.nombre, builder: (column) => column);
+
+  GeneratedColumn<String> get descripcion => $composableBuilder(
+    column: $table.descripcion,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get bloqueado =>
       $composableBuilder(column: $table.bloqueado, builder: (column) => column);
@@ -2771,20 +2893,24 @@ class $$ModulosTableTableManager
               ({
                 Value<int> idModulo = const Value.absent(),
                 Value<String> nombre = const Value.absent(),
+                Value<String> descripcion = const Value.absent(),
                 Value<bool> bloqueado = const Value.absent(),
               }) => ModulosCompanion(
                 idModulo: idModulo,
                 nombre: nombre,
+                descripcion: descripcion,
                 bloqueado: bloqueado,
               ),
           createCompanionCallback:
               ({
                 Value<int> idModulo = const Value.absent(),
                 required String nombre,
+                Value<String> descripcion = const Value.absent(),
                 Value<bool> bloqueado = const Value.absent(),
               }) => ModulosCompanion.insert(
                 idModulo: idModulo,
                 nombre: nombre,
+                descripcion: descripcion,
                 bloqueado: bloqueado,
               ),
           withReferenceMapper: (p0) => p0
@@ -4669,6 +4795,7 @@ typedef $$TeoriasTableCreateCompanionBuilder =
       Value<int> idTeoria,
       required int idModulo,
       required int idPaso,
+      Value<int> pagina,
       required String escrito,
     });
 typedef $$TeoriasTableUpdateCompanionBuilder =
@@ -4676,6 +4803,7 @@ typedef $$TeoriasTableUpdateCompanionBuilder =
       Value<int> idTeoria,
       Value<int> idModulo,
       Value<int> idPaso,
+      Value<int> pagina,
       Value<String> escrito,
     });
 
@@ -4729,6 +4857,11 @@ class $$TeoriasTableFilterComposer
   });
   ColumnFilters<int> get idTeoria => $composableBuilder(
     column: $table.idTeoria,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pagina => $composableBuilder(
+    column: $table.pagina,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4798,6 +4931,11 @@ class $$TeoriasTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get pagina => $composableBuilder(
+    column: $table.pagina,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get escrito => $composableBuilder(
     column: $table.escrito,
     builder: (column) => ColumnOrderings(column),
@@ -4861,6 +4999,9 @@ class $$TeoriasTableAnnotationComposer
   });
   GeneratedColumn<int> get idTeoria =>
       $composableBuilder(column: $table.idTeoria, builder: (column) => column);
+
+  GeneratedColumn<int> get pagina =>
+      $composableBuilder(column: $table.pagina, builder: (column) => column);
 
   GeneratedColumn<String> get escrito =>
       $composableBuilder(column: $table.escrito, builder: (column) => column);
@@ -4943,11 +5084,13 @@ class $$TeoriasTableTableManager
                 Value<int> idTeoria = const Value.absent(),
                 Value<int> idModulo = const Value.absent(),
                 Value<int> idPaso = const Value.absent(),
+                Value<int> pagina = const Value.absent(),
                 Value<String> escrito = const Value.absent(),
               }) => TeoriasCompanion(
                 idTeoria: idTeoria,
                 idModulo: idModulo,
                 idPaso: idPaso,
+                pagina: pagina,
                 escrito: escrito,
               ),
           createCompanionCallback:
@@ -4955,11 +5098,13 @@ class $$TeoriasTableTableManager
                 Value<int> idTeoria = const Value.absent(),
                 required int idModulo,
                 required int idPaso,
+                Value<int> pagina = const Value.absent(),
                 required String escrito,
               }) => TeoriasCompanion.insert(
                 idTeoria: idTeoria,
                 idModulo: idModulo,
                 idPaso: idPaso,
+                pagina: pagina,
                 escrito: escrito,
               ),
           withReferenceMapper: (p0) => p0

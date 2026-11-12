@@ -27,6 +27,11 @@ class ModulosRepositorioImpl implements ModulosRepositorio {
     return _baseDatos.desbloquearModulo(moduloId);
   }
 
+  @override
+  Future<bool?> siguienteModuloBloqueado(int moduloId) {
+    return _baseDatos.siguienteModuloBloqueado(moduloId);
+  }
+
   // Convierte las filas de Drift (ModuloData) en entidades del dominio (Modulos)
   List<Modulos> _aEntidades(List<bd.ModuloData> filas) {
     return filas

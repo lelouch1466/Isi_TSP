@@ -20,6 +20,13 @@ class PreguntaRepositorioImpl implements PreguntaRepositorio {
     return _aEntidades(filas);
   }
 
+  @override
+  Future<List<Preguntas>> obtenerPreguntasPorModulo(int moduloId) async {
+    final List<bd.PreguntaData> filas = await _baseDatos
+        .obtenerPreguntasPorModulo(moduloId);
+    return _aEntidades(filas);
+  }
+
   // Convierte las filas de Drift (PreguntaData) en entidades (Preguntas)
   List<Preguntas> _aEntidades(List<bd.PreguntaData> filas) {
     return filas

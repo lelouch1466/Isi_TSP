@@ -3,8 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:isi_tsp/domain/entities/modulos.dart';
 import 'package:isi_tsp/domain/repositories/modulos_repositorio.dart';
 import 'package:isi_tsp/presentation/components/leccion_selector.dart';
+import 'package:isi_tsp/presentation/components/mode_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/core/text_styles.dart';
+import 'package:isi_tsp/presentation/screens/examen_screen.dart';
 import 'package:isi_tsp/presentation/screens/leccion_map.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
 
@@ -97,15 +99,26 @@ class _HomeIsiState extends State<HomeIsi> {
                   ),
                 ),
                 //funcion y texto
-                onPressed: () {
+                onPressed: () async {
                   if (ultima_seleccion != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        //se manda el modulo que se presiono
-                        builder: (context) =>
-                            LeccionMap(moduloId: ultima_seleccion!),
-                      ),
+                    //primero se pregunta a la BD si el siguiente modulo
+                    //esta bloqueado (devuelve null si es el ultimo modulo)
+                    final bool? siguiente_bloqueado =
+                        await GetIt.instance<ModulosRepositorio>()
+                            .siguienteModuloBloqueado(ultima_seleccion!);
+
+                    //el examen solo se habilita si el siguiente modulo
+                    //existe y ya esta desbloqueado
+                    final bool examen_desbloqueado =
+                        siguiente_bloqueado == false;
+
+                    //despues de un await la pantalla pudo cerrarse
+                    if (!context.mounted) return;
+
+                    showDialog(
+                      context: context,
+                      builder: (ctx) =>
+                          confirmar_modo(context, examen_desbloqueado),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -126,6 +139,31 @@ class _HomeIsiState extends State<HomeIsi> {
           ),
         ],
       ),
+    );
+  }
+
+  ModeBox confirmar_modo(BuildContext context, bool examen_desbloqueado) {
+    return ModeBox(
+      avanzar_leccion: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            //se manda el modulo que se presiono
+            builder: (context) => LeccionMap(moduloId: ultima_seleccion!),
+          ),
+        );
+      },
+      tomar_examen: () {
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ExamenScreen(moduloId: ultima_seleccion!),
+          ),
+        );
+      },
+      examen_desbloqueado: examen_desbloqueado,
     );
   }
 

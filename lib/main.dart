@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isi_tsp/inyeccion_dependencias.dart';
 import 'package:isi_tsp/presentation/screens/home_isi.dart';
+import 'package:isi_tsp/presentation/screens/teoria_screen.dart';
 
 void main() {
   // Registra base de datos y repositorios antes de arrancar la app
@@ -19,6 +20,7 @@ class MainApp extends StatelessWidget {
         //body: QuestionScreen(),
         body: HomeIsi(),
         //body: LeccionMap(),
+        //body: TeoriaScreen(),
       ),
     );
   }

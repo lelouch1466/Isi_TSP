@@ -7,12 +7,15 @@ class ResultBox extends StatelessWidget {
   final int puntaje_final;
   final int total_preguntas;
   final VoidCallback reinicio;
+  //false = no se muestra el boton de regresar al mapa (por ejemplo en el examen)
+  final bool mostrar_regresar;
 
   const ResultBox({
     super.key,
     required this.puntaje_final,
     required this.total_preguntas,
     required this.reinicio,
+    this.mostrar_regresar = true,
   });
 
   @override
@@ -72,7 +75,8 @@ class ResultBox extends StatelessWidget {
                 child: Icon(Icons.restart_alt),
               ),
               //---------------------*----------------------------
-              //boton regresar a leccion
+              //boton regresar a leccion (solo si se pidio mostrarlo)
+              if (mostrar_regresar) ...[
               SizedBox(height: 20),
               // Botón de salir
               TextButton.icon(
@@ -98,6 +102,7 @@ class ResultBox extends StatelessWidget {
                   ),
                 ),
               ),
+              ],
 
               //---------------------*----------------------------
               const SizedBox(height: 30),

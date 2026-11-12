@@ -6,6 +6,7 @@ import 'package:isi_tsp/domain/usecases/desbloquear_siguiente.dart';
 import 'package:isi_tsp/presentation/components/barra_app.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
+import 'package:isi_tsp/presentation/screens/teoria_screen.dart';
 
 class LeccionMap extends StatefulWidget {
   //id del modulo que se presiono en HomeIsi
@@ -97,10 +98,19 @@ class _LeccionMapState extends State<LeccionMap> {
                         );
                       } else if (lista_pasos[var1].esTeoria) {
                         //si es teoria, abre teoria
-                        //al terminarla se desbloquea lo que sigue; el mapa
-                        //se actualiza solo porque escucha la BD con watch()
-                        GetIt.instance<DesbloquearSiguiente>()(
-                          lista_pasos[var1],
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TeoriaScreen(
+                              desbloquear_siguiente: () {
+                                GetIt.instance<DesbloquearSiguiente>()(
+                                  lista_pasos[var1],
+                                );
+                              },
+                              modulo_id: widget.moduloId,
+                              paso_id: lista_pasos[var1].pasoId,
+                            ),
+                          ),
                         );
                       }
                     },

@@ -1,8 +1,4 @@
-// Datos que se insertan en la BD la primera vez que se crea (onCreate).
-// Solo son datos de Dart: no dependen de Drift ni de Flutter.
-
 // Una pregunta con su respuesta correcta y 3 incorrectas.
-// Asi siempre hay exactamente 4 opciones y solo 1 correcta.
 class PreguntaSemilla {
   final String titulo;
   final String correcta;
@@ -86,11 +82,7 @@ const Map<int, Map<int, List<PreguntaSemilla>>> preguntasIniciales = {
       PreguntaSemilla(
         '¿Qué hace un ingeniero de software?',
         'Aplica principios de ingeniería para especificar, diseñar, construir y mantener software',
-        [
-          'Solo instala programas',
-          'Solo repara redes',
-          'Solo prueba hardware',
-        ],
+        ['Solo instala programas', 'Solo repara redes', 'Solo prueba hardware'],
       ),
       PreguntaSemilla(
         '¿Cuál de estos es un principio ético de la profesión?',
@@ -418,6 +410,68 @@ const Map<int, Map<int, List<PreguntaSemilla>>> preguntasIniciales = {
           'Cambiar el lenguaje de programación',
         ],
       ),
+    ],
+  },
+};
+
+// Teoria por [numero de modulo][numero de paso].
+// Solo los pasos de tipo teoria (1, 3 y 5) tienen teoria.
+// El orden de la lista es la pagina: el primer texto es la pagina 1, etc.
+const Map<int, Map<int, List<String>>> teoriasIniciales = {
+  // ===================== MODULO 1: FUNDAMENTOS =====================
+  1: {
+    1: [
+      'La ingeniería de software es la aplicación de un enfoque sistemático, disciplinado y medible al desarrollo, operación y mantenimiento del software. No se trata solo de programar, sino de planear, diseñar, construir, probar y mantener sistemas de forma ordenada.',
+      'El término se popularizó en 1968, en una conferencia de la OTAN, como respuesta a la llamada "crisis del software": muchos proyectos se entregaban tarde, costaban más de lo previsto y tenían errores graves.',
+      'Su objetivo es producir software de calidad, a tiempo y dentro del presupuesto. Para lograrlo combina conocimientos técnicos, métodos de trabajo y herramientas, igual que otras ingenierías.',
+    ],
+    3: [
+      'El software es intangible: no se desgasta con el uso como una máquina, pero sí se deteriora cuando se modifica sin cuidado. Por eso el mantenimiento ocupa gran parte de su vida útil.',
+      'Existen distintos tipos de software: de sistema (como un sistema operativo), de aplicación (como un editor de texto), embebido (dentro de un dispositivo) y web o móvil, entre otros.',
+      'Un stakeholder es cualquier persona u organización interesada o afectada por el proyecto: clientes, usuarios, desarrolladores, directivos e incluso reguladores. Entender sus necesidades es clave para el éxito.',
+    ],
+    5: [
+      'La calidad del software se mide con atributos como funcionalidad, confiabilidad, usabilidad, eficiencia, mantenibilidad y portabilidad. La norma ISO/IEC 25010 define un modelo de calidad con estas características.',
+      'El mantenimiento puede ser correctivo (corregir errores), adaptativo (ajustarse a cambios del entorno), perfectivo (mejorar o agregar funciones) y preventivo (evitar problemas futuros).',
+      'El ingeniero de software tiene responsabilidades éticas: proteger la información del cliente, ser honesto sobre los riesgos y errores conocidos, y entregar productos probados que no pongan en riesgo a las personas.',
+    ],
+  },
+
+  // ===================== MODULO 2: PROCESOS Y METODOLOGIAS =====================
+  2: {
+    1: [
+      'El ciclo de vida del software describe las etapas por las que pasa un sistema: análisis de requisitos, diseño, implementación, pruebas, despliegue y mantenimiento, hasta su retiro.',
+      'Un proceso de software es el conjunto de actividades que se siguen para construir un sistema. Un modelo de proceso indica en qué orden y de qué forma se realizan esas actividades.',
+      'Elegir el modelo adecuado depende del proyecto: qué tan claros son los requisitos, qué tan grande es el equipo, cuánto riesgo existe y qué tan seguido puede participar el cliente.',
+    ],
+    3: [
+      'El modelo en cascada organiza las etapas de forma secuencial: cada una empieza cuando termina la anterior. Es fácil de planear, pero cuesta mucho corregir errores detectados al final.',
+      'El modelo incremental entrega el sistema en partes funcionales. Cada incremento agrega funciones nuevas, lo que permite que el cliente use el software antes y dé retroalimentación temprana.',
+      'El modelo en espiral repite ciclos de planeación, análisis de riesgos, desarrollo y evaluación. Es útil en proyectos grandes y riesgosos, porque obliga a revisar los riesgos en cada vuelta.',
+    ],
+    5: [
+      'Las metodologías ágiles priorizan a las personas, el software funcionando, la colaboración con el cliente y la respuesta al cambio. Estos valores se publicaron en el Manifiesto Ágil en 2001.',
+      'Scrum trabaja en iteraciones cortas llamadas sprints. Sus roles son el Product Owner, que prioriza el backlog; el Scrum Master, que facilita el proceso; y el equipo de desarrollo.',
+      'Kanban organiza el trabajo en un tablero visual con columnas como "Por hacer", "En progreso" y "Terminado", y limita la cantidad de tareas en progreso para mantener un flujo constante.',
+    ],
+  },
+
+  // ===================== MODULO 3: REQUISITOS, DISENO Y PRUEBAS =====================
+  3: {
+    1: [
+      'Un requisito describe algo que el sistema debe hacer o una condición que debe cumplir. Los requisitos funcionales indican qué hace el sistema; los no funcionales, cómo debe hacerlo (rendimiento, seguridad, usabilidad).',
+      'La ingeniería de requisitos incluye obtenerlos (entrevistas, encuestas, observación), analizarlos, documentarlos y validarlos con los stakeholders para confirmar que son correctos.',
+      'En metodologías ágiles se usan historias de usuario con el formato "Como [rol], quiero [funcionalidad], para [beneficio]", acompañadas de criterios de aceptación que definen cuándo está terminada.',
+    ],
+    3: [
+      'El diseño de software define la estructura del sistema antes de programarlo: sus componentes, cómo se comunican y qué responsabilidad tiene cada uno.',
+      'UML es un lenguaje gráfico para modelar sistemas. El diagrama de casos de uso muestra la interacción entre actores y sistema; el diagrama de clases muestra clases, atributos, métodos y relaciones.',
+      'Un buen diseño busca bajo acoplamiento (módulos poco dependientes entre sí) y alta cohesión (cada módulo con una responsabilidad clara). Los patrones de diseño ofrecen soluciones probadas a problemas comunes.',
+    ],
+    5: [
+      'Las pruebas de software verifican que el sistema funcione como se espera y ayudan a encontrar errores antes de que lleguen al usuario. No prueban que no haya errores, pero reducen el riesgo.',
+      'Hay varios niveles de prueba: unitarias (funciones o clases aisladas), de integración (módulos trabajando juntos), de sistema (el sistema completo) y de aceptación (validación con el cliente).',
+      'Las pruebas de caja negra revisan entradas y salidas sin ver el código; las de caja blanca analizan la lógica interna. Las pruebas de regresión confirman que un cambio nuevo no rompió lo que ya funcionaba.',
     ],
   },
 };

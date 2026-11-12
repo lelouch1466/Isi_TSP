@@ -10,6 +10,8 @@ part 'app_database.g.dart';
 class Modulos extends Table {
   IntColumn get idModulo => integer().autoIncrement()();
   TextColumn get nombre => text()();
+  //texto corto que resume el modulo
+  TextColumn get descripcion => text().withDefault(const Constant(''))();
   BoolColumn get bloqueado => boolean().withDefault(const Constant(true))();
 }
 
@@ -47,6 +49,8 @@ class Teorias extends Table {
   IntColumn get idTeoria => integer().autoIncrement()();
   IntColumn get idModulo => integer().references(Modulos, #idModulo)();
   IntColumn get idPaso => integer().references(Pasos, #idPaso)();
+  //orden de la pagina dentro del paso (1, 2, 3...)
+  IntColumn get pagina => integer().withDefault(const Constant(1))();
   TextColumn get escrito => text()();
 }
 
@@ -149,8 +153,26 @@ class AppDatabase extends _$AppDatabase {
           ),
         );
 
-        //los pasos de teoria no tienen preguntas
-        if (!esCuestionario) continue;
+        //los pasos de teoria llevan sus paginas de teoria y no tienen preguntas
+        if (!esCuestionario) {
+          final paginasDelPaso =
+              teoriasIniciales[numeroModulo]?[numeroPaso] ?? const <String>[];
+
+          // cada texto es una pagina: comparten idModulo e idPaso,
+          // y la pagina va 1, 2, 3... segun su posicion en la lista
+          await batch((b) {
+            b.insertAll(teorias, [
+              for (int p = 0; p < paginasDelPaso.length; p++)
+                TeoriasCompanion.insert(
+                  idModulo: idModulo,
+                  idPaso: idPaso,
+                  pagina: Value(p + 1),
+                  escrito: paginasDelPaso[p],
+                ),
+            ]);
+          });
+          continue;
+        }
 
         final preguntasDelPaso =
             preguntasIniciales[numeroModulo]?[numeroPaso] ?? const [];
@@ -188,6 +210,28 @@ class AppDatabase extends _$AppDatabase {
         }
       }
     }
+
+    //modulo 4 "endless": se inserta aparte porque no sigue el patron
+    //de 6 pasos. Empieza bloqueado; se desbloquea al completar el ultimo
+    //paso del modulo 3 (lo hace DesbloquearSiguiente, que pasa al
+    //siguiente modulo por orden de id)
+    final int idModuloEndless = await into(modulos).insert(
+      ModulosCompanion.insert(
+        nombre: 'endless',
+        //bloqueado no se pone: por defecto es true
+      ),
+    );
+
+    //su unico paso: cuestionario y ya desbloqueado
+    await into(pasos).insert(
+      PasosCompanion.insert(
+        idModulo: idModuloEndless,
+        numero: 1,
+        nombreLeccion: 'M4p1c',
+        bloqueado: const Value(false),
+        tipoContenido: 'cuestionario',
+      ),
+    );
   }
   //===============================*======================================
   // ===================== CONSULTAS =====================
@@ -209,6 +253,18 @@ class AppDatabase extends _$AppDatabase {
     await (update(modulos)..where((t) => t.idModulo.equals(id))).write(
       const ModulosCompanion(bloqueado: Value(false)),
     );
+  }
+
+  //dice si el modulo que sigue (el de id mayor mas cercano) esta bloqueado
+  //devuelve null si no hay un siguiente modulo
+  Future<bool?> siguienteModuloBloqueado(int idModulo) async {
+    final ModuloData? siguiente =
+        await (select(modulos)
+              ..where((t) => t.idModulo.isBiggerThanValue(idModulo))
+              ..orderBy([(t) => OrderingTerm(expression: t.idModulo)])
+              ..limit(1))
+            .getSingleOrNull();
+    return siguiente?.bloqueado;
   }
 
   //lee los pasos de un modulo, ordenados por su numero (1, 2, 3...)
@@ -245,13 +301,34 @@ class AppDatabase extends _$AppDatabase {
             ..orderBy([(t) => OrderingTerm(expression: t.idPregunta)]))
           .get();
 
+  //lee todas las preguntas de un modulo (de todos sus pasos),
+  //ordenadas por paso y despues por id
+  Future<List<PreguntaData>> obtenerPreguntasPorModulo(int idModulo) =>
+      (select(preguntas)
+            ..where((t) => t.idModulo.equals(idModulo))
+            ..orderBy([
+              (t) => OrderingTerm(expression: t.idPaso),
+              (t) => OrderingTerm(expression: t.idPregunta),
+            ]))
+          .get();
+
   //lee las opciones de una pregunta, ordenadas por id
-  Future<List<PreguntaOpcionData>> obtenerOpcionesPorPregunta(
-    int idPregunta,
-  ) =>
+  Future<List<PreguntaOpcionData>> obtenerOpcionesPorPregunta(int idPregunta) =>
       (select(preguntaOpciones)
             ..where((t) => t.idPregunta.equals(idPregunta))
             ..orderBy([(t) => OrderingTerm(expression: t.idOpcion)]))
+          .get();
+
+  //lee las paginas de teoria de un modulo y paso, ordenadas por pagina
+  Future<List<TeoriaData>> obtenerTeoriasPorModuloYPaso(
+    int idModulo,
+    int idPaso,
+  ) =>
+      (select(teorias)
+            ..where(
+              (t) => t.idModulo.equals(idModulo) & t.idPaso.equals(idPaso),
+            )
+            ..orderBy([(t) => OrderingTerm(expression: t.pagina)]))
           .get();
 }
 
