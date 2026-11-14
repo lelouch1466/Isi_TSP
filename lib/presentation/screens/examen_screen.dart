@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:isi_tsp/domain/constants/modulos_constantes.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isi_tsp/domain/entities/pregunta_opcion.dart';
 import 'package:isi_tsp/domain/entities/preguntas.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
+import 'package:isi_tsp/domain/repositories/puntaje_repositorio.dart';
 import 'package:isi_tsp/presentation/components/answer_selector.dart';
 import 'package:isi_tsp/presentation/components/result_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
@@ -37,6 +41,22 @@ class _ExamenScreenState extends State<ExamenScreen> {
   //se pide una sola vez al entrar a la pantalla
   late final Future<void> carga_preguntas;
 
+  //---------------- modo endless ----------------
+  //todas las preguntas
+  bool get esEndless => widget.moduloId == moduloEndlessId;
+
+  //sube en cada turno; se usa como key de AnswerSelector para que
+  //se limpie aunque salga la misma pregunta dos veces seguidas
+  int ronda = 0;
+  final Random _azar = Random();
+
+  //pregunta sorteada en el turno actual (solo endless)
+  Preguntas? preguntaActual;
+
+  //pregunta que se muestra segun el modo
+  Preguntas get preguntaMostrada =>
+      esEndless ? preguntaActual! : listado[index];
+
   @override
   void initState() {
     super.initState();
@@ -45,10 +65,12 @@ class _ExamenScreenState extends State<ExamenScreen> {
 
   //consulta las preguntas y despues las opciones de cada una
   Future<void> cargarPreguntas() async {
-    final List<Preguntas> preguntas =
-        await GetIt.instance<PreguntaRepositorio>().obtenerPreguntasPorModulo(
-          widget.moduloId,
-        );
+    final PreguntaRepositorio repo = GetIt.instance<PreguntaRepositorio>();
+
+    //endless junta las preguntas de todos los modulos
+    List<Preguntas> preguntas = esEndless
+        ? await repo.obtenerTodasLasPreguntas()
+        : await repo.obtenerPreguntasPorModulo(widget.moduloId);
 
     for (final pregunta in preguntas) {
       final List<PreguntaOpcion> opciones =
@@ -61,7 +83,26 @@ class _ExamenScreenState extends State<ExamenScreen> {
       };
     }
 
+    //en endless se quitan las preguntas sin opciones para no quedar atorado
+    if (esEndless) {
+      preguntas = preguntas
+          .where((p) => (opciones_por_pregunta[p.preguntaId] ?? {}).isNotEmpty)
+          .toList();
+    }
+
     listado = preguntas;
+
+    //la primera pregunta se sortea antes de mostrar la pantalla
+    if (esEndless) sortearPregunta();
+  }
+
+  //elige una pregunta al azar (se puede repetir) y limpia el turno
+  void sortearPregunta() {
+    if (listado.isEmpty) return;
+    preguntaActual = listado[_azar.nextInt(listado.length)];
+    opcion_tomada = false;
+    opcion_correcta1 = null;
+    ronda++;
   }
 
   @override
@@ -90,8 +131,12 @@ class _ExamenScreenState extends State<ExamenScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (listado.isEmpty) {
-              return const Center(
-                child: Text("Este modulo no tiene preguntas"),
+              return Center(
+                child: Text(
+                  esEndless
+                      ? "No hay preguntas disponibles"
+                      : "Este modulo no tiene preguntas",
+                ),
               );
             }
 
@@ -101,7 +146,7 @@ class _ExamenScreenState extends State<ExamenScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: Text(
-                    listado[index].titulo,
+                    preguntaMostrada.titulo,
                     style: TextStyles.pregunta,
                   ),
                 ),
@@ -111,10 +156,11 @@ class _ExamenScreenState extends State<ExamenScreen> {
 
                 //widget de las opciones de la pregunta actual
                 AnswerSelector(
-                  //el mismo Map de cada pregunta se reutiliza, asi
-                  //AnswerSelector solo vuelve a mezclar al cambiar de pregunta
+                  //key distinta en cada turno: se crea de nuevo, mezcla las
+                  //opciones y no deja marcada la respuesta anterior
+                  key: ValueKey(ronda),
                   lista_opciones:
-                      opciones_por_pregunta[listado[index].preguntaId] ?? {},
+                      opciones_por_pregunta[preguntaMostrada.preguntaId] ?? {},
                   tomar_opcion: (valor_opcion) {
                     setState(() {
                       opcion_tomada = true;
@@ -148,11 +194,17 @@ class _ExamenScreenState extends State<ExamenScreen> {
   AppBar barra_app() {
     return AppBar(
       backgroundColor: Appcolors.barraap,
-      title: Text("Examen", style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(
+        esEndless ? "Endless" : "Examen",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       actions: [
         Padding(
           padding: const EdgeInsetsGeometry.all(18),
-          child: Text("Puntaje: $puntaje", style: TextStyles.bold),
+          child: Text(
+            esEndless ? "Racha: $puntaje" : "Puntaje: $puntaje",
+            style: TextStyles.bold,
+          ),
         ),
       ],
     );
@@ -163,6 +215,12 @@ class _ExamenScreenState extends State<ExamenScreen> {
     return GestureDetector(
       //logica
       onTap: () {
+        //endless tiene su propia logica
+        if (esEndless) {
+          siguienteEndless();
+          return;
+        }
+
         setState(() {
           //si el index es menor y tiene opcion tomada
           if (index < numero_preguntas - 1 && opcion_tomada) {
@@ -176,6 +234,9 @@ class _ExamenScreenState extends State<ExamenScreen> {
             if (opcion_correcta1!) {
               puntaje++;
             }
+
+            //se guarda el puntaje del examen (solo si es mayor)
+            guardarPuntajeExamen();
 
             //pantalla de resultado
             showDialog(
@@ -220,12 +281,69 @@ class _ExamenScreenState extends State<ExamenScreen> {
     );
   }
 
+  //Siguiente en endless: correcta suma y sortea otra, incorrecta termina
+  void siguienteEndless() {
+    if (!opcion_tomada || opcion_correcta1 == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("selecciona una opcion"),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    if (opcion_correcta1!) {
+      setState(() {
+        puntaje++;
+        sortearPregunta();
+      });
+    } else {
+      mostrarResultadoEndless();
+    }
+  }
+
+  //guarda el puntaje del examen de este modulo; la BD solo lo
+  //sobrescribe si es mayor que el guardado
+  void guardarPuntajeExamen() {
+    GetIt.instance<PuntajeRepositorio>().actualizarPuntajeExamen(
+      widget.moduloId,
+      puntaje,
+    );
+  }
+
+  //fin de la partida endless: muestra la racha
+  void mostrarResultadoEndless() {
+    //la racha se guarda como puntaje del examen de endless (solo si es mayor)
+    guardarPuntajeExamen();
+
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => ResultBox(
+        puntaje_final: puntaje,
+        //se ignora en endless; 1 evita dividir entre cero
+        total_preguntas: 1,
+        es_endless: true,
+        mostrar_regresar: false,
+        reinicio: boton_reinicio,
+      ),
+    );
+  }
+
   void boton_reinicio() {
     setState(() {
       index = 0;
       opcion_tomada = false;
-      opcion_correcta1;
+      opcion_correcta1 = null;
       puntaje = 0;
+      //endless empieza con otra pregunta al azar; normal vuelve a la primera
+      if (esEndless) {
+        sortearPregunta();
+      } else {
+        ronda++;
+      }
     });
     Navigator.pop(context);
   }

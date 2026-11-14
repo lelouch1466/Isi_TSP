@@ -4,6 +4,7 @@ import 'package:isi_tsp/domain/entities/pregunta_opcion.dart';
 import 'package:isi_tsp/domain/entities/preguntas.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
+import 'package:isi_tsp/domain/repositories/puntaje_repositorio.dart';
 import 'package:isi_tsp/presentation/components/answer_selector.dart';
 import 'package:isi_tsp/presentation/components/result_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
@@ -181,6 +182,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
             if (opcion_correcta1!) {
               puntaje++;
             }
+            //se guarda el puntaje (la BD solo lo cambia si es mayor)
+            GetIt.instance<PuntajeRepositorio>().actualizarPuntaje(
+              widget.moduloId,
+              widget.pasoId,
+              puntaje,
+            );
+
             if ((puntaje * 100) / numero_preguntas >= 80) {
               widget.desbloquear_siguiente();
             }

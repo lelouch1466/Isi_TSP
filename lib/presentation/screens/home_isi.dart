@@ -9,6 +9,7 @@ import 'package:isi_tsp/presentation/core/text_styles.dart';
 import 'package:isi_tsp/presentation/screens/examen_screen.dart';
 import 'package:isi_tsp/presentation/screens/leccion_map.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
+import 'package:isi_tsp/presentation/screens/records_screen.dart';
 
 class HomeIsi extends StatefulWidget {
   const HomeIsi({super.key});
@@ -50,11 +51,18 @@ class _HomeIsiState extends State<HomeIsi> {
     return Scaffold(
       body: Column(
         children: [
-          Image.asset("assets/images/wtmk.jpg"),
+          GestureDetector(
+            onLongPress: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RecordsScreen()),
+              );
+            },
+            child: Image.asset("assets/images/wtmk.jpg"),
+          ),
           Text("welcome to mario kart"),
 
-          //botones de los modulos leidos de la base de datos
-          //StreamBuilder se redibuja solo cada vez que el Stream emite
+          //---------------------*----------------------------
           StreamBuilder<List<Modulos>>(
             stream: modulos_bd,
             builder: (context, snapshot) {
@@ -67,6 +75,7 @@ class _HomeIsiState extends State<HomeIsi> {
                   child: CircularProgressIndicator(),
                 );
               }
+              //---------------------*----------------------------
               return Column(
                 children: [
                   for (final modulo in snapshot.data!)
@@ -83,6 +92,7 @@ class _HomeIsiState extends State<HomeIsi> {
             },
           ),
 
+          //---------------------*----------------------------
           Spacer(),
 
           //boton de siguiente
@@ -115,11 +125,24 @@ class _HomeIsiState extends State<HomeIsi> {
                     //despues de un await la pantalla pudo cerrarse
                     if (!context.mounted) return;
 
-                    showDialog(
-                      context: context,
-                      builder: (ctx) =>
-                          confirmar_modo(context, examen_desbloqueado),
-                    );
+                    if ([1, 2, 3].contains(ultima_seleccion)) {
+                      //si es algun modulo de leccion abrir opciones
+                      showDialog(
+                        context: context,
+                        builder: (ctx) =>
+                            confirmar_modo(context, examen_desbloqueado),
+                      );
+                    } else {
+                      //si es el 4 abrir examen directamente
+                      //(aqui no hay dialogo abierto, asi que no se hace pop)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ExamenScreen(moduloId: ultima_seleccion!),
+                        ),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -142,6 +165,8 @@ class _HomeIsiState extends State<HomeIsi> {
     );
   }
 
+  //===============================*======================================
+  //===============================*======================================
   ModeBox confirmar_modo(BuildContext context, bool examen_desbloqueado) {
     return ModeBox(
       avanzar_leccion: () {
@@ -167,6 +192,7 @@ class _HomeIsiState extends State<HomeIsi> {
     );
   }
 
+  //===============================*======================================
   LeccionSelector insertarBoton(
     int num_leccion,
     String nombre,

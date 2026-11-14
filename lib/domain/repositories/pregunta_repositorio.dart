@@ -11,4 +11,7 @@ abstract class PreguntaRepositorio {
 
   // lee todas las preguntas de un modulo, de todos sus pasos
   Future<List<Preguntas>> obtenerPreguntasPorModulo(int moduloId);
+
+  // lee las preguntas de todos los modulos
+  Future<List<Preguntas>> obtenerTodasLasPreguntas();
 }

@@ -1813,12 +1813,12 @@ class TeoriasCompanion extends UpdateCompanion<TeoriaData> {
   }
 }
 
-class $PuntajesTable extends Puntajes
-    with TableInfo<$PuntajesTable, PuntajeData> {
+class $PuntajeCuestionarioTable extends PuntajeCuestionario
+    with TableInfo<$PuntajeCuestionarioTable, PuntajeCuestionarioData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PuntajesTable(this.attachedDatabase, [this._alias]);
+  $PuntajeCuestionarioTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idPuntajeMeta = const VerificationMeta(
     'idPuntaje',
   );
@@ -1878,10 +1878,10 @@ class $PuntajesTable extends Puntajes
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'puntajes';
+  static const String $name = 'puntaje_cuestionario';
   @override
   VerificationContext validateIntegrity(
-    Insertable<PuntajeData> instance, {
+    Insertable<PuntajeCuestionarioData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1920,9 +1920,12 @@ class $PuntajesTable extends Puntajes
   @override
   Set<GeneratedColumn> get $primaryKey => {idPuntaje};
   @override
-  PuntajeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  PuntajeCuestionarioData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PuntajeData(
+    return PuntajeCuestionarioData(
       idPuntaje: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id_puntaje'],
@@ -1943,17 +1946,18 @@ class $PuntajesTable extends Puntajes
   }
 
   @override
-  $PuntajesTable createAlias(String alias) {
-    return $PuntajesTable(attachedDatabase, alias);
+  $PuntajeCuestionarioTable createAlias(String alias) {
+    return $PuntajeCuestionarioTable(attachedDatabase, alias);
   }
 }
 
-class PuntajeData extends DataClass implements Insertable<PuntajeData> {
+class PuntajeCuestionarioData extends DataClass
+    implements Insertable<PuntajeCuestionarioData> {
   final int idPuntaje;
   final int idModulo;
   final int idPaso;
   final int puntaje;
-  const PuntajeData({
+  const PuntajeCuestionarioData({
     required this.idPuntaje,
     required this.idModulo,
     required this.idPaso,
@@ -1969,8 +1973,8 @@ class PuntajeData extends DataClass implements Insertable<PuntajeData> {
     return map;
   }
 
-  PuntajesCompanion toCompanion(bool nullToAbsent) {
-    return PuntajesCompanion(
+  PuntajeCuestionarioCompanion toCompanion(bool nullToAbsent) {
+    return PuntajeCuestionarioCompanion(
       idPuntaje: Value(idPuntaje),
       idModulo: Value(idModulo),
       idPaso: Value(idPaso),
@@ -1978,12 +1982,12 @@ class PuntajeData extends DataClass implements Insertable<PuntajeData> {
     );
   }
 
-  factory PuntajeData.fromJson(
+  factory PuntajeCuestionarioData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PuntajeData(
+    return PuntajeCuestionarioData(
       idPuntaje: serializer.fromJson<int>(json['idPuntaje']),
       idModulo: serializer.fromJson<int>(json['idModulo']),
       idPaso: serializer.fromJson<int>(json['idPaso']),
@@ -2001,19 +2005,19 @@ class PuntajeData extends DataClass implements Insertable<PuntajeData> {
     };
   }
 
-  PuntajeData copyWith({
+  PuntajeCuestionarioData copyWith({
     int? idPuntaje,
     int? idModulo,
     int? idPaso,
     int? puntaje,
-  }) => PuntajeData(
+  }) => PuntajeCuestionarioData(
     idPuntaje: idPuntaje ?? this.idPuntaje,
     idModulo: idModulo ?? this.idModulo,
     idPaso: idPaso ?? this.idPaso,
     puntaje: puntaje ?? this.puntaje,
   );
-  PuntajeData copyWithCompanion(PuntajesCompanion data) {
-    return PuntajeData(
+  PuntajeCuestionarioData copyWithCompanion(PuntajeCuestionarioCompanion data) {
+    return PuntajeCuestionarioData(
       idPuntaje: data.idPuntaje.present ? data.idPuntaje.value : this.idPuntaje,
       idModulo: data.idModulo.present ? data.idModulo.value : this.idModulo,
       idPaso: data.idPaso.present ? data.idPaso.value : this.idPaso,
@@ -2023,7 +2027,7 @@ class PuntajeData extends DataClass implements Insertable<PuntajeData> {
 
   @override
   String toString() {
-    return (StringBuffer('PuntajeData(')
+    return (StringBuffer('PuntajeCuestionarioData(')
           ..write('idPuntaje: $idPuntaje, ')
           ..write('idModulo: $idModulo, ')
           ..write('idPaso: $idPaso, ')
@@ -2037,32 +2041,33 @@ class PuntajeData extends DataClass implements Insertable<PuntajeData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PuntajeData &&
+      (other is PuntajeCuestionarioData &&
           other.idPuntaje == this.idPuntaje &&
           other.idModulo == this.idModulo &&
           other.idPaso == this.idPaso &&
           other.puntaje == this.puntaje);
 }
 
-class PuntajesCompanion extends UpdateCompanion<PuntajeData> {
+class PuntajeCuestionarioCompanion
+    extends UpdateCompanion<PuntajeCuestionarioData> {
   final Value<int> idPuntaje;
   final Value<int> idModulo;
   final Value<int> idPaso;
   final Value<int> puntaje;
-  const PuntajesCompanion({
+  const PuntajeCuestionarioCompanion({
     this.idPuntaje = const Value.absent(),
     this.idModulo = const Value.absent(),
     this.idPaso = const Value.absent(),
     this.puntaje = const Value.absent(),
   });
-  PuntajesCompanion.insert({
+  PuntajeCuestionarioCompanion.insert({
     this.idPuntaje = const Value.absent(),
     required int idModulo,
     required int idPaso,
     this.puntaje = const Value.absent(),
   }) : idModulo = Value(idModulo),
        idPaso = Value(idPaso);
-  static Insertable<PuntajeData> custom({
+  static Insertable<PuntajeCuestionarioData> custom({
     Expression<int>? idPuntaje,
     Expression<int>? idModulo,
     Expression<int>? idPaso,
@@ -2076,13 +2081,13 @@ class PuntajesCompanion extends UpdateCompanion<PuntajeData> {
     });
   }
 
-  PuntajesCompanion copyWith({
+  PuntajeCuestionarioCompanion copyWith({
     Value<int>? idPuntaje,
     Value<int>? idModulo,
     Value<int>? idPaso,
     Value<int>? puntaje,
   }) {
-    return PuntajesCompanion(
+    return PuntajeCuestionarioCompanion(
       idPuntaje: idPuntaje ?? this.idPuntaje,
       idModulo: idModulo ?? this.idModulo,
       idPaso: idPaso ?? this.idPaso,
@@ -2110,10 +2115,276 @@ class PuntajesCompanion extends UpdateCompanion<PuntajeData> {
 
   @override
   String toString() {
-    return (StringBuffer('PuntajesCompanion(')
+    return (StringBuffer('PuntajeCuestionarioCompanion(')
           ..write('idPuntaje: $idPuntaje, ')
           ..write('idModulo: $idModulo, ')
           ..write('idPaso: $idPaso, ')
+          ..write('puntaje: $puntaje')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PuntajeExamenTable extends PuntajeExamen
+    with TableInfo<$PuntajeExamenTable, PuntajeExamenData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PuntajeExamenTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idPuntajeExamenMeta = const VerificationMeta(
+    'idPuntajeExamen',
+  );
+  @override
+  late final GeneratedColumn<int> idPuntajeExamen = GeneratedColumn<int>(
+    'id_puntaje_examen',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _idModuloMeta = const VerificationMeta(
+    'idModulo',
+  );
+  @override
+  late final GeneratedColumn<int> idModulo = GeneratedColumn<int>(
+    'id_modulo',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES modulos (id_modulo)',
+    ),
+  );
+  static const VerificationMeta _puntajeMeta = const VerificationMeta(
+    'puntaje',
+  );
+  @override
+  late final GeneratedColumn<int> puntaje = GeneratedColumn<int>(
+    'puntaje',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [idPuntajeExamen, idModulo, puntaje];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'puntaje_examen';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PuntajeExamenData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id_puntaje_examen')) {
+      context.handle(
+        _idPuntajeExamenMeta,
+        idPuntajeExamen.isAcceptableOrUnknown(
+          data['id_puntaje_examen']!,
+          _idPuntajeExamenMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id_modulo')) {
+      context.handle(
+        _idModuloMeta,
+        idModulo.isAcceptableOrUnknown(data['id_modulo']!, _idModuloMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_idModuloMeta);
+    }
+    if (data.containsKey('puntaje')) {
+      context.handle(
+        _puntajeMeta,
+        puntaje.isAcceptableOrUnknown(data['puntaje']!, _puntajeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {idPuntajeExamen};
+  @override
+  PuntajeExamenData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PuntajeExamenData(
+      idPuntajeExamen: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id_puntaje_examen'],
+      )!,
+      idModulo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id_modulo'],
+      )!,
+      puntaje: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}puntaje'],
+      )!,
+    );
+  }
+
+  @override
+  $PuntajeExamenTable createAlias(String alias) {
+    return $PuntajeExamenTable(attachedDatabase, alias);
+  }
+}
+
+class PuntajeExamenData extends DataClass
+    implements Insertable<PuntajeExamenData> {
+  final int idPuntajeExamen;
+  final int idModulo;
+  final int puntaje;
+  const PuntajeExamenData({
+    required this.idPuntajeExamen,
+    required this.idModulo,
+    required this.puntaje,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id_puntaje_examen'] = Variable<int>(idPuntajeExamen);
+    map['id_modulo'] = Variable<int>(idModulo);
+    map['puntaje'] = Variable<int>(puntaje);
+    return map;
+  }
+
+  PuntajeExamenCompanion toCompanion(bool nullToAbsent) {
+    return PuntajeExamenCompanion(
+      idPuntajeExamen: Value(idPuntajeExamen),
+      idModulo: Value(idModulo),
+      puntaje: Value(puntaje),
+    );
+  }
+
+  factory PuntajeExamenData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PuntajeExamenData(
+      idPuntajeExamen: serializer.fromJson<int>(json['idPuntajeExamen']),
+      idModulo: serializer.fromJson<int>(json['idModulo']),
+      puntaje: serializer.fromJson<int>(json['puntaje']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'idPuntajeExamen': serializer.toJson<int>(idPuntajeExamen),
+      'idModulo': serializer.toJson<int>(idModulo),
+      'puntaje': serializer.toJson<int>(puntaje),
+    };
+  }
+
+  PuntajeExamenData copyWith({
+    int? idPuntajeExamen,
+    int? idModulo,
+    int? puntaje,
+  }) => PuntajeExamenData(
+    idPuntajeExamen: idPuntajeExamen ?? this.idPuntajeExamen,
+    idModulo: idModulo ?? this.idModulo,
+    puntaje: puntaje ?? this.puntaje,
+  );
+  PuntajeExamenData copyWithCompanion(PuntajeExamenCompanion data) {
+    return PuntajeExamenData(
+      idPuntajeExamen: data.idPuntajeExamen.present
+          ? data.idPuntajeExamen.value
+          : this.idPuntajeExamen,
+      idModulo: data.idModulo.present ? data.idModulo.value : this.idModulo,
+      puntaje: data.puntaje.present ? data.puntaje.value : this.puntaje,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PuntajeExamenData(')
+          ..write('idPuntajeExamen: $idPuntajeExamen, ')
+          ..write('idModulo: $idModulo, ')
+          ..write('puntaje: $puntaje')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(idPuntajeExamen, idModulo, puntaje);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PuntajeExamenData &&
+          other.idPuntajeExamen == this.idPuntajeExamen &&
+          other.idModulo == this.idModulo &&
+          other.puntaje == this.puntaje);
+}
+
+class PuntajeExamenCompanion extends UpdateCompanion<PuntajeExamenData> {
+  final Value<int> idPuntajeExamen;
+  final Value<int> idModulo;
+  final Value<int> puntaje;
+  const PuntajeExamenCompanion({
+    this.idPuntajeExamen = const Value.absent(),
+    this.idModulo = const Value.absent(),
+    this.puntaje = const Value.absent(),
+  });
+  PuntajeExamenCompanion.insert({
+    this.idPuntajeExamen = const Value.absent(),
+    required int idModulo,
+    this.puntaje = const Value.absent(),
+  }) : idModulo = Value(idModulo);
+  static Insertable<PuntajeExamenData> custom({
+    Expression<int>? idPuntajeExamen,
+    Expression<int>? idModulo,
+    Expression<int>? puntaje,
+  }) {
+    return RawValuesInsertable({
+      if (idPuntajeExamen != null) 'id_puntaje_examen': idPuntajeExamen,
+      if (idModulo != null) 'id_modulo': idModulo,
+      if (puntaje != null) 'puntaje': puntaje,
+    });
+  }
+
+  PuntajeExamenCompanion copyWith({
+    Value<int>? idPuntajeExamen,
+    Value<int>? idModulo,
+    Value<int>? puntaje,
+  }) {
+    return PuntajeExamenCompanion(
+      idPuntajeExamen: idPuntajeExamen ?? this.idPuntajeExamen,
+      idModulo: idModulo ?? this.idModulo,
+      puntaje: puntaje ?? this.puntaje,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (idPuntajeExamen.present) {
+      map['id_puntaje_examen'] = Variable<int>(idPuntajeExamen.value);
+    }
+    if (idModulo.present) {
+      map['id_modulo'] = Variable<int>(idModulo.value);
+    }
+    if (puntaje.present) {
+      map['puntaje'] = Variable<int>(puntaje.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PuntajeExamenCompanion(')
+          ..write('idPuntajeExamen: $idPuntajeExamen, ')
+          ..write('idModulo: $idModulo, ')
           ..write('puntaje: $puntaje')
           ..write(')'))
         .toString();
@@ -2396,7 +2667,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $TeoriasTable teorias = $TeoriasTable(this);
-  late final $PuntajesTable puntajes = $PuntajesTable(this);
+  late final $PuntajeCuestionarioTable puntajeCuestionario =
+      $PuntajeCuestionarioTable(this);
+  late final $PuntajeExamenTable puntajeExamen = $PuntajeExamenTable(this);
   late final $GlosariosTable glosarios = $GlosariosTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -2408,7 +2681,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     preguntas,
     preguntaOpciones,
     teorias,
-    puntajes,
+    puntajeCuestionario,
+    puntajeExamen,
     glosarios,
   ];
 }
@@ -2505,18 +2779,46 @@ final class $$ModulosTableReferences
     );
   }
 
-  static MultiTypedResultKey<$PuntajesTable, List<PuntajeData>>
-  _puntajesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.puntajes,
-    aliasName: 'modulos__id_modulo__puntajes__id_modulo',
+  static MultiTypedResultKey<
+    $PuntajeCuestionarioTable,
+    List<PuntajeCuestionarioData>
+  >
+  _puntajeCuestionarioRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.puntajeCuestionario,
+        aliasName: 'modulos__id_modulo__puntaje_cuestionario__id_modulo',
+      );
+
+  $$PuntajeCuestionarioTableProcessedTableManager get puntajeCuestionarioRefs {
+    final manager =
+        $$PuntajeCuestionarioTableTableManager(
+          $_db,
+          $_db.puntajeCuestionario,
+        ).filter(
+          (f) => f.idModulo.idModulo.sqlEquals($_itemColumn<int>('id_modulo')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _puntajeCuestionarioRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PuntajeExamenTable, List<PuntajeExamenData>>
+  _puntajeExamenRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.puntajeExamen,
+    aliasName: 'modulos__id_modulo__puntaje_examen__id_modulo',
   );
 
-  $$PuntajesTableProcessedTableManager get puntajesRefs {
-    final manager = $$PuntajesTableTableManager($_db, $_db.puntajes).filter(
-      (f) => f.idModulo.idModulo.sqlEquals($_itemColumn<int>('id_modulo')!),
-    );
+  $$PuntajeExamenTableProcessedTableManager get puntajeExamenRefs {
+    final manager = $$PuntajeExamenTableTableManager($_db, $_db.puntajeExamen)
+        .filter(
+          (f) => f.idModulo.idModulo.sqlEquals($_itemColumn<int>('id_modulo')!),
+        );
 
-    final cache = $_typedResult.readTableOrNull(_puntajesRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_puntajeExamenRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -2652,22 +2954,47 @@ class $$ModulosTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> puntajesRefs(
-    Expression<bool> Function($$PuntajesTableFilterComposer f) f,
+  Expression<bool> puntajeCuestionarioRefs(
+    Expression<bool> Function($$PuntajeCuestionarioTableFilterComposer f) f,
   ) {
-    final $$PuntajesTableFilterComposer composer = $composerBuilder(
+    final $$PuntajeCuestionarioTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.idModulo,
-      referencedTable: $db.puntajes,
+      referencedTable: $db.puntajeCuestionario,
       getReferencedColumn: (t) => t.idModulo,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PuntajesTableFilterComposer(
+          }) => $$PuntajeCuestionarioTableFilterComposer(
             $db: $db,
-            $table: $db.puntajes,
+            $table: $db.puntajeCuestionario,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> puntajeExamenRefs(
+    Expression<bool> Function($$PuntajeExamenTableFilterComposer f) f,
+  ) {
+    final $$PuntajeExamenTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.idModulo,
+      referencedTable: $db.puntajeExamen,
+      getReferencedColumn: (t) => t.idModulo,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PuntajeExamenTableFilterComposer(
+            $db: $db,
+            $table: $db.puntajeExamen,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2831,22 +3158,48 @@ class $$ModulosTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> puntajesRefs<T extends Object>(
-    Expression<T> Function($$PuntajesTableAnnotationComposer a) f,
+  Expression<T> puntajeCuestionarioRefs<T extends Object>(
+    Expression<T> Function($$PuntajeCuestionarioTableAnnotationComposer a) f,
   ) {
-    final $$PuntajesTableAnnotationComposer composer = $composerBuilder(
+    final $$PuntajeCuestionarioTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.idModulo,
+          referencedTable: $db.puntajeCuestionario,
+          getReferencedColumn: (t) => t.idModulo,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PuntajeCuestionarioTableAnnotationComposer(
+                $db: $db,
+                $table: $db.puntajeCuestionario,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> puntajeExamenRefs<T extends Object>(
+    Expression<T> Function($$PuntajeExamenTableAnnotationComposer a) f,
+  ) {
+    final $$PuntajeExamenTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.idModulo,
-      referencedTable: $db.puntajes,
+      referencedTable: $db.puntajeExamen,
       getReferencedColumn: (t) => t.idModulo,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PuntajesTableAnnotationComposer(
+          }) => $$PuntajeExamenTableAnnotationComposer(
             $db: $db,
-            $table: $db.puntajes,
+            $table: $db.puntajeExamen,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2875,7 +3228,8 @@ class $$ModulosTableTableManager
             bool preguntasRefs,
             bool preguntaOpcionesRefs,
             bool teoriasRefs,
-            bool puntajesRefs,
+            bool puntajeCuestionarioRefs,
+            bool puntajeExamenRefs,
           })
         > {
   $$ModulosTableTableManager(_$AppDatabase db, $ModulosTable table)
@@ -2927,7 +3281,8 @@ class $$ModulosTableTableManager
                 preguntasRefs = false,
                 preguntaOpcionesRefs = false,
                 teoriasRefs = false,
-                puntajesRefs = false,
+                puntajeCuestionarioRefs = false,
+                puntajeExamenRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -2936,7 +3291,8 @@ class $$ModulosTableTableManager
                     if (preguntasRefs) db.preguntas,
                     if (preguntaOpcionesRefs) db.preguntaOpciones,
                     if (teoriasRefs) db.teorias,
-                    if (puntajesRefs) db.puntajes,
+                    if (puntajeCuestionarioRefs) db.puntajeCuestionario,
+                    if (puntajeExamenRefs) db.puntajeExamen,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -3021,21 +3377,42 @@ class $$ModulosTableTableManager
                               ),
                           typedResults: items,
                         ),
-                      if (puntajesRefs)
+                      if (puntajeCuestionarioRefs)
                         await $_getPrefetchedData<
                           ModuloData,
                           $ModulosTable,
-                          PuntajeData
+                          PuntajeCuestionarioData
                         >(
                           currentTable: table,
                           referencedTable: $$ModulosTableReferences
-                              ._puntajesRefsTable(db),
+                              ._puntajeCuestionarioRefsTable(db),
                           managerFromTypedResult: (p0) =>
                               $$ModulosTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).puntajesRefs,
+                              ).puntajeCuestionarioRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.idModulo == item.idModulo,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (puntajeExamenRefs)
+                        await $_getPrefetchedData<
+                          ModuloData,
+                          $ModulosTable,
+                          PuntajeExamenData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ModulosTableReferences
+                              ._puntajeExamenRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ModulosTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).puntajeExamenRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.idModulo == item.idModulo,
@@ -3067,7 +3444,8 @@ typedef $$ModulosTableProcessedTableManager =
         bool preguntasRefs,
         bool preguntaOpcionesRefs,
         bool teoriasRefs,
-        bool puntajesRefs,
+        bool puntajeCuestionarioRefs,
+        bool puntajeExamenRefs,
       })
     >;
 typedef $$PasosTableCreateCompanionBuilder =
@@ -3167,19 +3545,25 @@ final class $$PasosTableReferences
     );
   }
 
-  static MultiTypedResultKey<$PuntajesTable, List<PuntajeData>>
-  _puntajesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.puntajes,
-    aliasName: 'pasos__id_paso__puntajes__id_paso',
-  );
+  static MultiTypedResultKey<
+    $PuntajeCuestionarioTable,
+    List<PuntajeCuestionarioData>
+  >
+  _puntajeCuestionarioRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.puntajeCuestionario,
+        aliasName: 'pasos__id_paso__puntaje_cuestionario__id_paso',
+      );
 
-  $$PuntajesTableProcessedTableManager get puntajesRefs {
-    final manager = $$PuntajesTableTableManager(
+  $$PuntajeCuestionarioTableProcessedTableManager get puntajeCuestionarioRefs {
+    final manager = $$PuntajeCuestionarioTableTableManager(
       $_db,
-      $_db.puntajes,
+      $_db.puntajeCuestionario,
     ).filter((f) => f.idPaso.idPaso.sqlEquals($_itemColumn<int>('id_paso')!));
 
-    final cache = $_typedResult.readTableOrNull(_puntajesRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(
+      _puntajeCuestionarioRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -3317,22 +3701,22 @@ class $$PasosTableFilterComposer extends Composer<_$AppDatabase, $PasosTable> {
     return f(composer);
   }
 
-  Expression<bool> puntajesRefs(
-    Expression<bool> Function($$PuntajesTableFilterComposer f) f,
+  Expression<bool> puntajeCuestionarioRefs(
+    Expression<bool> Function($$PuntajeCuestionarioTableFilterComposer f) f,
   ) {
-    final $$PuntajesTableFilterComposer composer = $composerBuilder(
+    final $$PuntajeCuestionarioTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.idPaso,
-      referencedTable: $db.puntajes,
+      referencedTable: $db.puntajeCuestionario,
       getReferencedColumn: (t) => t.idPaso,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PuntajesTableFilterComposer(
+          }) => $$PuntajeCuestionarioTableFilterComposer(
             $db: $db,
-            $table: $db.puntajes,
+            $table: $db.puntajeCuestionario,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3527,28 +3911,29 @@ class $$PasosTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> puntajesRefs<T extends Object>(
-    Expression<T> Function($$PuntajesTableAnnotationComposer a) f,
+  Expression<T> puntajeCuestionarioRefs<T extends Object>(
+    Expression<T> Function($$PuntajeCuestionarioTableAnnotationComposer a) f,
   ) {
-    final $$PuntajesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idPaso,
-      referencedTable: $db.puntajes,
-      getReferencedColumn: (t) => t.idPaso,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PuntajesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.puntajes,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
+    final $$PuntajeCuestionarioTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.idPaso,
+          referencedTable: $db.puntajeCuestionario,
+          getReferencedColumn: (t) => t.idPaso,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer,
-          ),
-    );
+              }) => $$PuntajeCuestionarioTableAnnotationComposer(
+                $db: $db,
+                $table: $db.puntajeCuestionario,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -3571,7 +3956,7 @@ class $$PasosTableTableManager
             bool preguntasRefs,
             bool preguntaOpcionesRefs,
             bool teoriasRefs,
-            bool puntajesRefs,
+            bool puntajeCuestionarioRefs,
           })
         > {
   $$PasosTableTableManager(_$AppDatabase db, $PasosTable table)
@@ -3629,7 +4014,7 @@ class $$PasosTableTableManager
                 preguntasRefs = false,
                 preguntaOpcionesRefs = false,
                 teoriasRefs = false,
-                puntajesRefs = false,
+                puntajeCuestionarioRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -3637,7 +4022,7 @@ class $$PasosTableTableManager
                     if (preguntasRefs) db.preguntas,
                     if (preguntaOpcionesRefs) db.preguntaOpciones,
                     if (teoriasRefs) db.teorias,
-                    if (puntajesRefs) db.puntajes,
+                    if (puntajeCuestionarioRefs) db.puntajeCuestionario,
                   ],
                   addJoins:
                       <
@@ -3732,21 +4117,21 @@ class $$PasosTableTableManager
                               ),
                           typedResults: items,
                         ),
-                      if (puntajesRefs)
+                      if (puntajeCuestionarioRefs)
                         await $_getPrefetchedData<
                           PasoData,
                           $PasosTable,
-                          PuntajeData
+                          PuntajeCuestionarioData
                         >(
                           currentTable: table,
                           referencedTable: $$PasosTableReferences
-                              ._puntajesRefsTable(db),
+                              ._puntajeCuestionarioRefsTable(db),
                           managerFromTypedResult: (p0) =>
                               $$PasosTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).puntajesRefs,
+                              ).puntajeCuestionarioRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.idPaso == item.idPaso,
@@ -3778,7 +4163,7 @@ typedef $$PasosTableProcessedTableManager =
         bool preguntasRefs,
         bool preguntaOpcionesRefs,
         bool teoriasRefs,
-        bool puntajesRefs,
+        bool puntajeCuestionarioRefs,
       })
     >;
 typedef $$PreguntasTableCreateCompanionBuilder =
@@ -5187,27 +5572,36 @@ typedef $$TeoriasTableProcessedTableManager =
       TeoriaData,
       PrefetchHooks Function({bool idModulo, bool idPaso})
     >;
-typedef $$PuntajesTableCreateCompanionBuilder =
-    PuntajesCompanion Function({
+typedef $$PuntajeCuestionarioTableCreateCompanionBuilder =
+    PuntajeCuestionarioCompanion Function({
       Value<int> idPuntaje,
       required int idModulo,
       required int idPaso,
       Value<int> puntaje,
     });
-typedef $$PuntajesTableUpdateCompanionBuilder =
-    PuntajesCompanion Function({
+typedef $$PuntajeCuestionarioTableUpdateCompanionBuilder =
+    PuntajeCuestionarioCompanion Function({
       Value<int> idPuntaje,
       Value<int> idModulo,
       Value<int> idPaso,
       Value<int> puntaje,
     });
 
-final class $$PuntajesTableReferences
-    extends BaseReferences<_$AppDatabase, $PuntajesTable, PuntajeData> {
-  $$PuntajesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$PuntajeCuestionarioTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PuntajeCuestionarioTable,
+          PuntajeCuestionarioData
+        > {
+  $$PuntajeCuestionarioTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
 
-  static $ModulosTable _idModuloTable(_$AppDatabase db) =>
-      db.modulos.createAlias('puntajes__id_modulo__modulos__id_modulo');
+  static $ModulosTable _idModuloTable(_$AppDatabase db) => db.modulos
+      .createAlias('puntaje_cuestionario__id_modulo__modulos__id_modulo');
 
   $$ModulosTableProcessedTableManager get idModulo {
     final $_column = $_itemColumn<int>('id_modulo')!;
@@ -5224,7 +5618,7 @@ final class $$PuntajesTableReferences
   }
 
   static $PasosTable _idPasoTable(_$AppDatabase db) =>
-      db.pasos.createAlias('puntajes__id_paso__pasos__id_paso');
+      db.pasos.createAlias('puntaje_cuestionario__id_paso__pasos__id_paso');
 
   $$PasosTableProcessedTableManager get idPaso {
     final $_column = $_itemColumn<int>('id_paso')!;
@@ -5241,9 +5635,9 @@ final class $$PuntajesTableReferences
   }
 }
 
-class $$PuntajesTableFilterComposer
-    extends Composer<_$AppDatabase, $PuntajesTable> {
-  $$PuntajesTableFilterComposer({
+class $$PuntajeCuestionarioTableFilterComposer
+    extends Composer<_$AppDatabase, $PuntajeCuestionarioTable> {
+  $$PuntajeCuestionarioTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -5307,9 +5701,9 @@ class $$PuntajesTableFilterComposer
   }
 }
 
-class $$PuntajesTableOrderingComposer
-    extends Composer<_$AppDatabase, $PuntajesTable> {
-  $$PuntajesTableOrderingComposer({
+class $$PuntajeCuestionarioTableOrderingComposer
+    extends Composer<_$AppDatabase, $PuntajeCuestionarioTable> {
+  $$PuntajeCuestionarioTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -5373,9 +5767,9 @@ class $$PuntajesTableOrderingComposer
   }
 }
 
-class $$PuntajesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $PuntajesTable> {
-  $$PuntajesTableAnnotationComposer({
+class $$PuntajeCuestionarioTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PuntajeCuestionarioTable> {
+  $$PuntajeCuestionarioTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -5435,39 +5829,47 @@ class $$PuntajesTableAnnotationComposer
   }
 }
 
-class $$PuntajesTableTableManager
+class $$PuntajeCuestionarioTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $PuntajesTable,
-          PuntajeData,
-          $$PuntajesTableFilterComposer,
-          $$PuntajesTableOrderingComposer,
-          $$PuntajesTableAnnotationComposer,
-          $$PuntajesTableCreateCompanionBuilder,
-          $$PuntajesTableUpdateCompanionBuilder,
-          (PuntajeData, $$PuntajesTableReferences),
-          PuntajeData,
+          $PuntajeCuestionarioTable,
+          PuntajeCuestionarioData,
+          $$PuntajeCuestionarioTableFilterComposer,
+          $$PuntajeCuestionarioTableOrderingComposer,
+          $$PuntajeCuestionarioTableAnnotationComposer,
+          $$PuntajeCuestionarioTableCreateCompanionBuilder,
+          $$PuntajeCuestionarioTableUpdateCompanionBuilder,
+          (PuntajeCuestionarioData, $$PuntajeCuestionarioTableReferences),
+          PuntajeCuestionarioData,
           PrefetchHooks Function({bool idModulo, bool idPaso})
         > {
-  $$PuntajesTableTableManager(_$AppDatabase db, $PuntajesTable table)
-    : super(
+  $$PuntajeCuestionarioTableTableManager(
+    _$AppDatabase db,
+    $PuntajeCuestionarioTable table,
+  ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$PuntajesTableFilterComposer($db: db, $table: table),
+              $$PuntajeCuestionarioTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$PuntajesTableOrderingComposer($db: db, $table: table),
+              $$PuntajeCuestionarioTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
-              $$PuntajesTableAnnotationComposer($db: db, $table: table),
+              $$PuntajeCuestionarioTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
           updateCompanionCallback:
               ({
                 Value<int> idPuntaje = const Value.absent(),
                 Value<int> idModulo = const Value.absent(),
                 Value<int> idPaso = const Value.absent(),
                 Value<int> puntaje = const Value.absent(),
-              }) => PuntajesCompanion(
+              }) => PuntajeCuestionarioCompanion(
                 idPuntaje: idPuntaje,
                 idModulo: idModulo,
                 idPaso: idPaso,
@@ -5479,7 +5881,7 @@ class $$PuntajesTableTableManager
                 required int idModulo,
                 required int idPaso,
                 Value<int> puntaje = const Value.absent(),
-              }) => PuntajesCompanion.insert(
+              }) => PuntajeCuestionarioCompanion.insert(
                 idPuntaje: idPuntaje,
                 idModulo: idModulo,
                 idPaso: idPaso,
@@ -5489,7 +5891,7 @@ class $$PuntajesTableTableManager
               .map(
                 (e) => (
                   e.readTable(table),
-                  $$PuntajesTableReferences(db, table, e),
+                  $$PuntajeCuestionarioTableReferences(db, table, e),
                 ),
               )
               .toList(),
@@ -5518,11 +5920,13 @@ class $$PuntajesTableTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.idModulo,
-                                referencedTable: $$PuntajesTableReferences
-                                    ._idModuloTable(db),
-                                referencedColumn: $$PuntajesTableReferences
-                                    ._idModuloTable(db)
-                                    .idModulo,
+                                referencedTable:
+                                    $$PuntajeCuestionarioTableReferences
+                                        ._idModuloTable(db),
+                                referencedColumn:
+                                    $$PuntajeCuestionarioTableReferences
+                                        ._idModuloTable(db)
+                                        .idModulo,
                               )
                               as T;
                     }
@@ -5531,11 +5935,13 @@ class $$PuntajesTableTableManager
                           state.withJoin(
                                 currentTable: table,
                                 currentColumn: table.idPaso,
-                                referencedTable: $$PuntajesTableReferences
-                                    ._idPasoTable(db),
-                                referencedColumn: $$PuntajesTableReferences
-                                    ._idPasoTable(db)
-                                    .idPaso,
+                                referencedTable:
+                                    $$PuntajeCuestionarioTableReferences
+                                        ._idPasoTable(db),
+                                referencedColumn:
+                                    $$PuntajeCuestionarioTableReferences
+                                        ._idPasoTable(db)
+                                        .idPaso,
                               )
                               as T;
                     }
@@ -5551,19 +5957,299 @@ class $$PuntajesTableTableManager
       );
 }
 
-typedef $$PuntajesTableProcessedTableManager =
+typedef $$PuntajeCuestionarioTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $PuntajesTable,
-      PuntajeData,
-      $$PuntajesTableFilterComposer,
-      $$PuntajesTableOrderingComposer,
-      $$PuntajesTableAnnotationComposer,
-      $$PuntajesTableCreateCompanionBuilder,
-      $$PuntajesTableUpdateCompanionBuilder,
-      (PuntajeData, $$PuntajesTableReferences),
-      PuntajeData,
+      $PuntajeCuestionarioTable,
+      PuntajeCuestionarioData,
+      $$PuntajeCuestionarioTableFilterComposer,
+      $$PuntajeCuestionarioTableOrderingComposer,
+      $$PuntajeCuestionarioTableAnnotationComposer,
+      $$PuntajeCuestionarioTableCreateCompanionBuilder,
+      $$PuntajeCuestionarioTableUpdateCompanionBuilder,
+      (PuntajeCuestionarioData, $$PuntajeCuestionarioTableReferences),
+      PuntajeCuestionarioData,
       PrefetchHooks Function({bool idModulo, bool idPaso})
+    >;
+typedef $$PuntajeExamenTableCreateCompanionBuilder =
+    PuntajeExamenCompanion Function({
+      Value<int> idPuntajeExamen,
+      required int idModulo,
+      Value<int> puntaje,
+    });
+typedef $$PuntajeExamenTableUpdateCompanionBuilder =
+    PuntajeExamenCompanion Function({
+      Value<int> idPuntajeExamen,
+      Value<int> idModulo,
+      Value<int> puntaje,
+    });
+
+final class $$PuntajeExamenTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $PuntajeExamenTable, PuntajeExamenData> {
+  $$PuntajeExamenTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ModulosTable _idModuloTable(_$AppDatabase db) =>
+      db.modulos.createAlias('puntaje_examen__id_modulo__modulos__id_modulo');
+
+  $$ModulosTableProcessedTableManager get idModulo {
+    final $_column = $_itemColumn<int>('id_modulo')!;
+
+    final manager = $$ModulosTableTableManager(
+      $_db,
+      $_db.modulos,
+    ).filter((f) => f.idModulo.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_idModuloTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PuntajeExamenTableFilterComposer
+    extends Composer<_$AppDatabase, $PuntajeExamenTable> {
+  $$PuntajeExamenTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get idPuntajeExamen => $composableBuilder(
+    column: $table.idPuntajeExamen,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get puntaje => $composableBuilder(
+    column: $table.puntaje,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ModulosTableFilterComposer get idModulo {
+    final $$ModulosTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.idModulo,
+      referencedTable: $db.modulos,
+      getReferencedColumn: (t) => t.idModulo,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ModulosTableFilterComposer(
+            $db: $db,
+            $table: $db.modulos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PuntajeExamenTableOrderingComposer
+    extends Composer<_$AppDatabase, $PuntajeExamenTable> {
+  $$PuntajeExamenTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get idPuntajeExamen => $composableBuilder(
+    column: $table.idPuntajeExamen,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get puntaje => $composableBuilder(
+    column: $table.puntaje,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ModulosTableOrderingComposer get idModulo {
+    final $$ModulosTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.idModulo,
+      referencedTable: $db.modulos,
+      getReferencedColumn: (t) => t.idModulo,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ModulosTableOrderingComposer(
+            $db: $db,
+            $table: $db.modulos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PuntajeExamenTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PuntajeExamenTable> {
+  $$PuntajeExamenTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get idPuntajeExamen => $composableBuilder(
+    column: $table.idPuntajeExamen,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get puntaje =>
+      $composableBuilder(column: $table.puntaje, builder: (column) => column);
+
+  $$ModulosTableAnnotationComposer get idModulo {
+    final $$ModulosTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.idModulo,
+      referencedTable: $db.modulos,
+      getReferencedColumn: (t) => t.idModulo,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ModulosTableAnnotationComposer(
+            $db: $db,
+            $table: $db.modulos,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PuntajeExamenTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PuntajeExamenTable,
+          PuntajeExamenData,
+          $$PuntajeExamenTableFilterComposer,
+          $$PuntajeExamenTableOrderingComposer,
+          $$PuntajeExamenTableAnnotationComposer,
+          $$PuntajeExamenTableCreateCompanionBuilder,
+          $$PuntajeExamenTableUpdateCompanionBuilder,
+          (PuntajeExamenData, $$PuntajeExamenTableReferences),
+          PuntajeExamenData,
+          PrefetchHooks Function({bool idModulo})
+        > {
+  $$PuntajeExamenTableTableManager(_$AppDatabase db, $PuntajeExamenTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PuntajeExamenTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PuntajeExamenTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PuntajeExamenTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> idPuntajeExamen = const Value.absent(),
+                Value<int> idModulo = const Value.absent(),
+                Value<int> puntaje = const Value.absent(),
+              }) => PuntajeExamenCompanion(
+                idPuntajeExamen: idPuntajeExamen,
+                idModulo: idModulo,
+                puntaje: puntaje,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> idPuntajeExamen = const Value.absent(),
+                required int idModulo,
+                Value<int> puntaje = const Value.absent(),
+              }) => PuntajeExamenCompanion.insert(
+                idPuntajeExamen: idPuntajeExamen,
+                idModulo: idModulo,
+                puntaje: puntaje,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PuntajeExamenTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({idModulo = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (idModulo) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.idModulo,
+                                referencedTable: $$PuntajeExamenTableReferences
+                                    ._idModuloTable(db),
+                                referencedColumn: $$PuntajeExamenTableReferences
+                                    ._idModuloTable(db)
+                                    .idModulo,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PuntajeExamenTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PuntajeExamenTable,
+      PuntajeExamenData,
+      $$PuntajeExamenTableFilterComposer,
+      $$PuntajeExamenTableOrderingComposer,
+      $$PuntajeExamenTableAnnotationComposer,
+      $$PuntajeExamenTableCreateCompanionBuilder,
+      $$PuntajeExamenTableUpdateCompanionBuilder,
+      (PuntajeExamenData, $$PuntajeExamenTableReferences),
+      PuntajeExamenData,
+      PrefetchHooks Function({bool idModulo})
     >;
 typedef $$GlosariosTableCreateCompanionBuilder =
     GlosariosCompanion Function({
@@ -5739,8 +6425,10 @@ class $AppDatabaseManager {
       $$PreguntaOpcionesTableTableManager(_db, _db.preguntaOpciones);
   $$TeoriasTableTableManager get teorias =>
       $$TeoriasTableTableManager(_db, _db.teorias);
-  $$PuntajesTableTableManager get puntajes =>
-      $$PuntajesTableTableManager(_db, _db.puntajes);
+  $$PuntajeCuestionarioTableTableManager get puntajeCuestionario =>
+      $$PuntajeCuestionarioTableTableManager(_db, _db.puntajeCuestionario);
+  $$PuntajeExamenTableTableManager get puntajeExamen =>
+      $$PuntajeExamenTableTableManager(_db, _db.puntajeExamen);
   $$GlosariosTableTableManager get glosarios =>
       $$GlosariosTableTableManager(_db, _db.glosarios);
 }

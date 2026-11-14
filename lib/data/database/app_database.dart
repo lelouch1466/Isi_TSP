@@ -54,11 +54,20 @@ class Teorias extends Table {
   TextColumn get escrito => text()();
 }
 
-@DataClassName('PuntajeData')
-class Puntajes extends Table {
+//puntaje de cada paso de cuestionario
+@DataClassName('PuntajeCuestionarioData')
+class PuntajeCuestionario extends Table {
   IntColumn get idPuntaje => integer().autoIncrement()();
   IntColumn get idModulo => integer().references(Modulos, #idModulo)();
   IntColumn get idPaso => integer().references(Pasos, #idPaso)();
+  IntColumn get puntaje => integer().withDefault(const Constant(0))();
+}
+
+//puntaje del examen de cada modulo (una fila por modulo)
+@DataClassName('PuntajeExamenData')
+class PuntajeExamen extends Table {
+  IntColumn get idPuntajeExamen => integer().autoIncrement()();
+  IntColumn get idModulo => integer().references(Modulos, #idModulo).unique()();
   IntColumn get puntaje => integer().withDefault(const Constant(0))();
 }
 
@@ -78,7 +87,8 @@ class Glosarios extends Table {
     Preguntas,
     PreguntaOpciones,
     Teorias,
-    Puntajes,
+    PuntajeCuestionario,
+    PuntajeExamen,
     Glosarios,
   ],
 )
@@ -138,6 +148,11 @@ class AppDatabase extends _$AppDatabase {
       final int numeroModulo = i + 1;
       final int idModulo = listaModulos[i].idModulo;
 
+      //el examen del modulo empieza con puntaje 0
+      await into(
+        puntajeExamen,
+      ).insert(PuntajeExamenCompanion.insert(idModulo: idModulo));
+
       //6 pasos por modulo: impares = teoria, pares = cuestionario
       for (int numeroPaso = 1; numeroPaso <= 6; numeroPaso++) {
         final bool esCuestionario = numeroPaso.isEven;
@@ -173,6 +188,14 @@ class AppDatabase extends _$AppDatabase {
           });
           continue;
         }
+
+        //cada paso de cuestionario empieza con puntaje 0
+        await into(puntajeCuestionario).insert(
+          PuntajeCuestionarioCompanion.insert(
+            idModulo: idModulo,
+            idPaso: idPaso,
+          ),
+        );
 
         final preguntasDelPaso =
             preguntasIniciales[numeroModulo]?[numeroPaso] ?? const [];
@@ -218,20 +241,15 @@ class AppDatabase extends _$AppDatabase {
     final int idModuloEndless = await into(modulos).insert(
       ModulosCompanion.insert(
         nombre: 'endless',
+        bloqueado: const Value(false),
         //bloqueado no se pone: por defecto es true
       ),
     );
 
-    //su unico paso: cuestionario y ya desbloqueado
-    await into(pasos).insert(
-      PasosCompanion.insert(
-        idModulo: idModuloEndless,
-        numero: 1,
-        nombreLeccion: 'M4p1c',
-        bloqueado: const Value(false),
-        tipoContenido: 'cuestionario',
-      ),
-    );
+    //el examen de endless (la racha) tambien empieza en 0
+    await into(
+      puntajeExamen,
+    ).insert(PuntajeExamenCompanion.insert(idModulo: idModuloEndless));
   }
   //===============================*======================================
   // ===================== CONSULTAS =====================
@@ -312,6 +330,16 @@ class AppDatabase extends _$AppDatabase {
             ]))
           .get();
 
+  //lee las preguntas de todos los modulos (para el modo endless),
+  //ordenadas por modulo, paso e id
+  Future<List<PreguntaData>> obtenerTodasLasPreguntas() =>
+      (select(preguntas)..orderBy([
+            (t) => OrderingTerm(expression: t.idModulo),
+            (t) => OrderingTerm(expression: t.idPaso),
+            (t) => OrderingTerm(expression: t.idPregunta),
+          ]))
+          .get();
+
   //lee las opciones de una pregunta, ordenadas por id
   Future<List<PreguntaOpcionData>> obtenerOpcionesPorPregunta(int idPregunta) =>
       (select(preguntaOpciones)
@@ -330,6 +358,89 @@ class AppDatabase extends _$AppDatabase {
             )
             ..orderBy([(t) => OrderingTerm(expression: t.pagina)]))
           .get();
+
+  //lee los puntajes junto con el nombre de la leccion de su paso
+  //(INNER JOIN puntaje_cuestionario con pasos por id_paso), ordenados por modulo y paso
+  Future<List<({PuntajeCuestionarioData puntaje, String nombreLeccion})>>
+  obtenerPuntajesConLeccion() async {
+    final consulta =
+        select(puntajeCuestionario).join([
+          innerJoin(pasos, pasos.idPaso.equalsExp(puntajeCuestionario.idPaso)),
+        ])..orderBy([
+          OrderingTerm(expression: puntajeCuestionario.idModulo),
+          OrderingTerm(expression: pasos.numero),
+        ]);
+
+    final filas = await consulta.get();
+
+    //cada fila trae las dos tablas; se toma el puntaje y el nombre del paso
+    return filas
+        .map(
+          (fila) => (
+            puntaje: fila.readTable(puntajeCuestionario),
+            nombreLeccion: fila.readTable(pasos).nombreLeccion,
+          ),
+        )
+        .toList();
+  }
+
+  //guarda el puntaje del paso solo si es mayor que el guardado
+  Future<void> actualizarPuntaje(
+    int idModulo,
+    int idPaso,
+    int nuevoPuntaje,
+  ) async {
+    await (update(puntajeCuestionario)..where(
+          (t) =>
+              t.idModulo.equals(idModulo) &
+              t.idPaso.equals(idPaso) &
+              t.puntaje.isSmallerThanValue(nuevoPuntaje),
+        ))
+        .write(PuntajeCuestionarioCompanion(puntaje: Value(nuevoPuntaje)));
+  }
+
+  //lee los puntajes de examen junto con el nombre de su modulo
+  //(INNER JOIN puntaje_examen con modulos), ordenados por modulo
+  Future<List<({PuntajeExamenData puntaje, String nombreModulo})>>
+  obtenerPuntajesExamenConModulo() async {
+    final consulta =
+        select(puntajeExamen).join([
+            innerJoin(
+              modulos,
+              modulos.idModulo.equalsExp(puntajeExamen.idModulo),
+            ),
+          ])
+          ..orderBy([OrderingTerm(expression: puntajeExamen.idModulo)]);
+
+    final filas = await consulta.get();
+
+    return filas
+        .map(
+          (fila) => (
+            puntaje: fila.readTable(puntajeExamen),
+            nombreModulo: fila.readTable(modulos).nombre,
+          ),
+        )
+        .toList();
+  }
+
+  //lee el puntaje del examen de un modulo (null si no tiene fila)
+  Future<int?> obtenerPuntajeExamen(int idModulo) async {
+    final PuntajeExamenData? fila = await (select(
+      puntajeExamen,
+    )..where((t) => t.idModulo.equals(idModulo))).getSingleOrNull();
+    return fila?.puntaje;
+  }
+
+  //guarda el puntaje del examen del modulo solo si es mayor que el guardado
+  Future<void> actualizarPuntajeExamen(int idModulo, int nuevoPuntaje) async {
+    await (update(puntajeExamen)..where(
+          (t) =>
+              t.idModulo.equals(idModulo) &
+              t.puntaje.isSmallerThanValue(nuevoPuntaje),
+        ))
+        .write(PuntajeExamenCompanion(puntaje: Value(nuevoPuntaje)));
+  }
 }
 
 // Instancia unica de la base para toda la app.

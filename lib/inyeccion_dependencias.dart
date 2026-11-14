@@ -4,12 +4,14 @@ import 'package:isi_tsp/data/repositories/modulos_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/pasos_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/pregunta_opcion_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/pregunta_repositorio_impl.dart';
+import 'package:isi_tsp/data/repositories/puntaje_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/teoria_repositorio_impl.dart';
 import 'package:isi_tsp/domain/repositories/modulos_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pasos_repositorio.dart';
 import 'package:isi_tsp/domain/usecases/desbloquear_siguiente.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
+import 'package:isi_tsp/domain/repositories/puntaje_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/teoria_repositorio.dart';
 
 // Registro global de dependencias.
@@ -41,6 +43,10 @@ void configurarDependencias() {
 
   getIt.registerLazySingleton<TeoriaRepositorio>(
     () => TeoriaRepositorioImpl(getIt<AppDatabase>()),
+  );
+
+  getIt.registerLazySingleton<PuntajeRepositorio>(
+    () => PuntajeRepositorioImpl(getIt<AppDatabase>()),
   );
 
   // Casos de uso: reglas de negocio que usan los repositorios
