@@ -6,6 +6,7 @@ import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/puntaje_repositorio.dart';
 import 'package:isi_tsp/presentation/components/answer_selector.dart';
+import 'package:isi_tsp/presentation/components/barra_app.dart';
 import 'package:isi_tsp/presentation/components/result_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/core/text_styles.dart';
@@ -148,14 +149,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   //===============================*======================================
   //===============================*======================================
+  //la barra comun de la app (trae el boton de sonido) con el puntaje
   AppBar barra_app() {
-    return AppBar(
-      backgroundColor: Appcolors.barraap,
-      title: Text(
-        "Cuestionario",
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      actions: [
+    return BarraApp.barrita(
+      "Cuestionario",
+      acciones: [
         Padding(
           padding: const EdgeInsetsGeometry.all(18),
           child: Text("Puntaje: $puntaje", style: TextStyles.bold),

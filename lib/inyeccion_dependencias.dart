@@ -7,6 +7,8 @@ import 'package:isi_tsp/data/repositories/pregunta_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/glosario_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/puntaje_repositorio_impl.dart';
 import 'package:isi_tsp/data/repositories/teoria_repositorio_impl.dart';
+import 'package:isi_tsp/data/musica/servicio_musica_impl.dart';
+import 'package:isi_tsp/domain/musica/servicio_musica.dart';
 import 'package:isi_tsp/domain/repositories/modulos_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pasos_repositorio.dart';
 import 'package:isi_tsp/domain/usecases/desbloquear_siguiente.dart';
@@ -62,6 +64,11 @@ void configurarDependencias() {
       getIt<ModulosRepositorio>(),
     ),
   );
+
+  // Musica de fondo: un solo reproductor para toda la app.
+  // Se registra el CONTRATO (domain) con su implementacion (data), igual
+  // que los repositorios.
+  getIt.registerLazySingleton<ServicioMusica>(() => ServicioMusicaImpl());
 
   // Cuando agregues mas repositorios, se registran aqui igual:
   // getIt.registerLazySingleton<CuestionarioRepositorio>(

@@ -9,6 +9,7 @@ import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/puntaje_repositorio.dart';
 import 'package:isi_tsp/presentation/components/answer_selector.dart';
+import 'package:isi_tsp/presentation/components/barra_app.dart';
 import 'package:isi_tsp/presentation/components/result_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/core/text_styles.dart';
@@ -191,14 +192,11 @@ class _ExamenScreenState extends State<ExamenScreen> {
 
   //===============================*======================================
   //===============================*======================================
+  //la barra comun de la app (trae el boton de sonido) con el puntaje o racha
   AppBar barra_app() {
-    return AppBar(
-      backgroundColor: Appcolors.barraap,
-      title: Text(
-        esEndless ? "Endless" : "Examen",
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      actions: [
+    return BarraApp.barrita(
+      esEndless ? "Endless" : "Examen",
+      acciones: [
         Padding(
           padding: const EdgeInsetsGeometry.all(18),
           child: Text(
