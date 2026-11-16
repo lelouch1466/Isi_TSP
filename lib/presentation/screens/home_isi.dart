@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isi_tsp/domain/entities/modulos.dart';
 import 'package:isi_tsp/domain/repositories/modulos_repositorio.dart';
+import 'package:isi_tsp/presentation/components/barra_app.dart';
 import 'package:isi_tsp/presentation/components/leccion_selector.dart';
 import 'package:isi_tsp/presentation/components/mode_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
@@ -49,6 +50,7 @@ class _HomeIsiState extends State<HomeIsi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: BarraApp.barrita("Home"),
       body: Column(
         children: [
           GestureDetector(
@@ -153,10 +155,7 @@ class _HomeIsiState extends State<HomeIsi> {
                     );
                   }
                 },
-                child: Text(
-                  "boton sumamente importante :v",
-                  style: TextStyles.bold,
-                ),
+                child: Text("Siguiente", style: TextStyles.bold),
               ),
             ),
           ),

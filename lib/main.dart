@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isi_tsp/inyeccion_dependencias.dart';
+import 'package:isi_tsp/presentation/screens/glosario_screen.dart';
 import 'package:isi_tsp/presentation/screens/home_isi.dart';
 import 'package:isi_tsp/presentation/screens/teoria_screen.dart';
 
@@ -18,7 +19,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         //body: QuestionScreen(),
-        body: HomeIsi(),
+        //body: HomeIsi(),
+        body: GlosarioScreen(),
         //body: LeccionMap(),
         //body: TeoriaScreen(),
       ),

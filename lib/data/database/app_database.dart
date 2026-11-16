@@ -250,6 +250,18 @@ class AppDatabase extends _$AppDatabase {
     await into(
       puntajeExamen,
     ).insert(PuntajeExamenCompanion.insert(idModulo: idModuloEndless));
+
+    //glosario: un registro por termino, en orden alfabetico
+    final terminos = glosarioInicial.keys.toList()..sort();
+    await batch((b) {
+      b.insertAll(glosarios, [
+        for (final termino in terminos)
+          GlosariosCompanion.insert(
+            termino: termino,
+            descripcion: glosarioInicial[termino]!,
+          ),
+      ]);
+    });
   }
   //===============================*======================================
   // ===================== CONSULTAS =====================
@@ -441,6 +453,11 @@ class AppDatabase extends _$AppDatabase {
         ))
         .write(PuntajeExamenCompanion(puntaje: Value(nuevoPuntaje)));
   }
+
+  //lee todos los terminos del glosario en orden alfabetico
+  Future<List<GlosarioData>> obtenerGlosario() => (select(
+    glosarios,
+  )..orderBy([(t) => OrderingTerm(expression: t.termino)])).get();
 }
 
 // Instancia unica de la base para toda la app.

@@ -475,3 +475,78 @@ const Map<int, Map<int, List<String>>> teoriasIniciales = {
     ],
   },
 };
+
+// Glosario: termino -> definicion. Se inserta en la tabla glosarios.
+// Ordenado alfabeticamente.
+const Map<String, String> glosarioInicial = {
+  'Acoplamiento':
+      'Grado de dependencia entre módulos. Un buen diseño busca bajo acoplamiento para que un cambio en un módulo afecte poco a los demás.',
+  'Backlog':
+      'Lista priorizada de funcionalidades, mejoras y correcciones pendientes de un producto. En Scrum la mantiene el Product Owner.',
+  'Calidad del software':
+      'Grado en que un sistema cumple sus requisitos y las expectativas del usuario. Se mide con atributos como confiabilidad, usabilidad y mantenibilidad.',
+  'Caso de uso':
+      'Descripción de cómo un actor interactúa con el sistema para lograr un objetivo concreto.',
+  'Ciclo de vida del software':
+      'Conjunto de etapas por las que pasa un sistema: requisitos, diseño, implementación, pruebas, despliegue, mantenimiento y retiro.',
+  'Cohesión':
+      'Grado en que los elementos de un módulo están relacionados con una sola responsabilidad. Se busca alta cohesión.',
+  'Control de versiones':
+      'Sistema que registra los cambios del código a lo largo del tiempo y permite trabajar en equipo. Git es el más usado.',
+  'Crisis del software':
+      'Problemas generalizados de los años 60 y 70: proyectos con retrasos, sobrecostos y baja calidad. Dio origen a la ingeniería de software.',
+  'Criterio de aceptación':
+      'Condición que una funcionalidad debe cumplir para considerarse terminada y aceptada por el cliente.',
+  'Deuda técnica':
+      'Costo futuro de elegir soluciones rápidas o mal hechas en lugar de soluciones correctas.',
+  'Diagrama de clases':
+      'Diagrama UML que muestra las clases de un sistema con sus atributos, métodos y relaciones.',
+  'Integración continua':
+      'Práctica de integrar y probar automáticamente los cambios del código varias veces al día.',
+  'Kanban':
+      'Método visual para gestionar el flujo de trabajo con un tablero de columnas que limita el trabajo en progreso.',
+  'Mantenibilidad':
+      'Facilidad con la que el software puede corregirse, adaptarse o mejorarse después de entregado.',
+  'Mantenimiento':
+      'Modificación del software después de su entrega. Puede ser correctivo, adaptativo, perfectivo o preventivo.',
+  'Metodología ágil':
+      'Enfoque de desarrollo iterativo que prioriza a las personas, el software funcionando y la adaptación al cambio.',
+  'Modelo en cascada':
+      'Modelo de proceso secuencial en el que cada etapa empieza cuando termina la anterior.',
+  'Modelo en espiral':
+      'Modelo de proceso iterativo que incluye un análisis de riesgos en cada vuelta del ciclo.',
+  'Modelo incremental':
+      'Modelo de proceso que entrega el sistema en partes funcionales sucesivas.',
+  'Patrón de diseño':
+      'Solución probada y reutilizable para un problema común de diseño de software.',
+  'Product Owner':
+      'Rol de Scrum responsable de maximizar el valor del producto y de priorizar el backlog.',
+  'Prototipo':
+      'Versión preliminar de un sistema que sirve para validar ideas o requisitos con el usuario.',
+  'Prueba de integración':
+      'Prueba que verifica que varios módulos funcionen correctamente juntos.',
+  'Prueba de regresión':
+      'Prueba que confirma que un cambio nuevo no rompió funciones que ya funcionaban.',
+  'Prueba unitaria':
+      'Prueba de la parte más pequeña del código, como una función o un método, de forma aislada.',
+  'Refactorización':
+      'Mejora de la estructura interna del código sin cambiar su comportamiento externo.',
+  'Requisito funcional':
+      'Describe lo que el sistema debe hacer, por ejemplo "el usuario puede iniciar sesión".',
+  'Requisito no funcional':
+      'Describe cómo debe comportarse el sistema: rendimiento, seguridad, usabilidad, disponibilidad, etc.',
+  'Scrum':
+      'Marco de trabajo ágil que organiza el desarrollo en sprints, con roles, eventos y artefactos definidos.',
+  'Scrum Master':
+      'Rol de Scrum que facilita el proceso y ayuda al equipo a eliminar impedimentos.',
+  'Sprint':
+      'Iteración de duración fija (normalmente de 1 a 4 semanas) en la que el equipo de Scrum entrega un incremento del producto.',
+  'Stakeholder':
+      'Cualquier persona u organización interesada o afectada por el proyecto, como clientes, usuarios o desarrolladores.',
+  'UML':
+      'Lenguaje Unificado de Modelado: notación gráfica estándar para representar el diseño de un sistema.',
+  'Usabilidad':
+      'Facilidad con la que los usuarios aprenden a usar un sistema y logran sus objetivos con él.',
+  'Historia de usuario':
+      'Descripción breve de una funcionalidad desde la perspectiva del usuario: "Como [rol], quiero [funcionalidad], para [beneficio]".',
+};
