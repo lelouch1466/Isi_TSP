@@ -4,7 +4,8 @@ import 'package:isi_tsp/domain/entities/pasos.dart';
 import 'package:isi_tsp/domain/repositories/pasos_repositorio.dart';
 import 'package:isi_tsp/domain/usecases/desbloquear_siguiente.dart';
 import 'package:isi_tsp/presentation/components/barra_app.dart';
-import 'package:isi_tsp/presentation/core/appcolors.dart';
+import 'package:isi_tsp/presentation/components/mapa/camino_pasos.dart';
+import 'package:isi_tsp/presentation/components/mapa/circulo_paso.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
 import 'package:isi_tsp/presentation/screens/teoria_screen.dart';
 
@@ -36,111 +37,141 @@ class _LeccionMapState extends State<LeccionMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BarraApp.barrita("Mapa"),
-      //Primero los parametros
-      body: SizedBox(
-        height: 120,
-        //StreamBuilder se redibuja solo cada vez que el Stream emite
-        child: StreamBuilder<List<Pasos>>(
-          stream: pasos_bd,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Error al cargar pasos: ${snapshot.error}"),
-              );
-            }
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final List<Pasos> lista_pasos = snapshot.data!;
-
-            if (lista_pasos.isEmpty) {
-              return const Center(child: Text("Este modulo no tiene pasos"));
-            }
-
-            return ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              //aqui los circulos y lineas
-              children: [
-                for (int var1 = 0; var1 < lista_pasos.length; var1++) ...[
-                  GestureDetector(
-                    //que hace el boton
-                    onTap: () {
-                      //si esta bloqueado no manda mensaje de que esta bloqueado
-                      if (!lista_pasos[var1].disponible) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Paso bloqueado: "
-                              "${lista_pasos[var1].nombreLeccion} "
-                              "(${lista_pasos[var1].tipoContenido})",
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      } else if (lista_pasos[var1].esCuestionario) {
-                        //si es cuestionario abre el cuestionario
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            //se manda el modulo y el paso de las prreguntas que debe cargar
-                            builder: (context) => QuestionScreen(
-                              moduloId: widget.moduloId,
-                              pasoId: lista_pasos[var1].pasoId,
-                              desbloquear_siguiente: () {
-                                GetIt.instance<DesbloquearSiguiente>()(
-                                  lista_pasos[var1],
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      } else if (lista_pasos[var1].esTeoria) {
-                        //si es teoria, abre teoria
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TeoriaScreen(
-                              desbloquear_siguiente: () {
-                                GetIt.instance<DesbloquearSiguiente>()(
-                                  lista_pasos[var1],
-                                );
-                              },
-                              modulo_id: widget.moduloId,
-                              paso_id: lista_pasos[var1].pasoId,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-
-                    //cosas visuales del boton
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: lista_pasos[var1].disponible
-                          ? Colors.blue
-                          : Appcolors.opcionseleccion,
-                      child: Text("${lista_pasos[var1].numero}"),
-                    ),
-                  ),
-
-                  if (var1 < lista_pasos.length - 1)
-                    Center(
-                      child: Container(
-                        width: 60,
-                        height: 3,
-                        color: lista_pasos[var1 + 1].disponible
-                            ? Colors.blue
-                            : Appcolors.opcionseleccion,
-                      ),
-                    ),
-                ],
-              ],
+      //StreamBuilder se redibuja solo cada vez que el Stream emite
+      body: StreamBuilder<List<Pasos>>(
+        stream: pasos_bd,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Error al cargar pasos: ${snapshot.error}"),
             );
-          },
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final List<Pasos> lista_pasos = snapshot.data!;
+
+          if (lista_pasos.isEmpty) {
+            return const Center(child: Text("Este modulo no tiene pasos"));
+          }
+
+          //LayoutBuilder da el ancho real de la pantalla para acomodar
+          //el zigzag igual en cualquier telefono
+          return LayoutBuilder(
+            builder: (context, limites) =>
+                mapaZigzag(context, lista_pasos, limites.maxWidth),
+          );
+        },
+      ),
+    );
+  }
+
+  //===============================*======================================
+  //circulos en zigzag (izquierda, derecha, izquierda...) unidos por el camino
+  Widget mapaZigzag(BuildContext context, List<Pasos> pasos, double ancho) {
+    //el circulo mide el 14% del ancho, pero nunca menos de 42 ni mas de 62
+    final double radio = (ancho * 0.14).clamp(42.0, 62.0);
+    final double tamanoCirculo = CirculoPaso.tamanoTotal(radio);
+
+    //distancia vertical entre un circulo y el siguiente
+    final double separacion = radio * 2.2;
+    final double margenArriba = tamanoCirculo / 2 + 24;
+
+    //centro de cada circulo: los pares a la izquierda (28% del ancho)
+    //y los impares a la derecha (72% del ancho)
+    final List<Offset> centros = [
+      for (int i = 0; i < pasos.length; i++)
+        Offset(
+          i.isEven ? ancho * 0.28 : ancho * 0.72,
+          margenArriba + i * separacion,
+        ),
+    ];
+    final double altoTotal = centros.last.dy + tamanoCirculo / 2 + 24;
+
+    //el siguiente por hacer es el ultimo paso desbloqueado
+    final int indiceSiguiente = pasos.lastIndexWhere((p) => p.disponible);
+
+    //---------------------*----------------------------
+    //si no cabe a lo alto, la pantalla se desliza hacia abajo
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: ancho,
+        height: altoTotal,
+        child: Stack(
+          children: [
+            //primero el camino, para que quede detras de los circulos
+            Positioned.fill(
+              child: CustomPaint(
+                painter: CaminoPasos(
+                  centros: centros,
+                  disponible: [for (final p in pasos) p.disponible],
+                ),
+              ),
+            ),
+
+            //despues los circulos, cada uno centrado en su punto
+            for (int i = 0; i < pasos.length; i++)
+              Positioned(
+                left: centros[i].dx - tamanoCirculo / 2,
+                top: centros[i].dy - tamanoCirculo / 2,
+                child: CirculoPaso(
+                  paso: pasos[i],
+                  radio: radio,
+                  esSiguiente: i == indiceSiguiente,
+                  alTocar: () => abrirPaso(context, pasos[i]),
+                ),
+              ),
+          ],
         ),
       ),
     );
+  }
+
+  //===============================*======================================
+  //que hace el boton de cada paso (misma logica de antes)
+  void abrirPaso(BuildContext context, Pasos paso) {
+    //si esta bloqueado solo manda mensaje de que esta bloqueado
+    if (!paso.disponible) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Paso bloqueado: "
+            "${paso.nombreLeccion} "
+            "(${paso.tipoContenido})",
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else if (paso.esCuestionario) {
+      //si es cuestionario abre el cuestionario
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          //se manda el modulo y el paso de las preguntas que debe cargar
+          builder: (context) => QuestionScreen(
+            moduloId: widget.moduloId,
+            pasoId: paso.pasoId,
+            desbloquear_siguiente: () {
+              GetIt.instance<DesbloquearSiguiente>()(paso);
+            },
+          ),
+        ),
+      );
+    } else if (paso.esTeoria) {
+      //si es teoria, abre teoria
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TeoriaScreen(
+            desbloquear_siguiente: () {
+              GetIt.instance<DesbloquearSiguiente>()(paso);
+            },
+            modulo_id: widget.moduloId,
+            paso_id: paso.pasoId,
+          ),
+        ),
+      );
+    }
   }
 }

@@ -11,6 +11,7 @@ import 'package:isi_tsp/data/musica/servicio_musica_impl.dart';
 import 'package:isi_tsp/domain/musica/servicio_musica.dart';
 import 'package:isi_tsp/domain/repositories/modulos_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pasos_repositorio.dart';
+import 'package:isi_tsp/domain/usecases/calcular_rango.dart';
 import 'package:isi_tsp/domain/usecases/desbloquear_siguiente.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_opcion_repositorio.dart';
 import 'package:isi_tsp/domain/repositories/pregunta_repositorio.dart';
@@ -63,6 +64,11 @@ void configurarDependencias() {
       getIt<PasosRepositorio>(),
       getIt<ModulosRepositorio>(),
     ),
+  );
+
+  // rango del jugador segun la suma de todos sus puntajes (pantalla Records)
+  getIt.registerLazySingleton<CalcularRango>(
+    () => CalcularRango(getIt<PuntajeRepositorio>()),
   );
 
   // Musica de fondo: un solo reproductor para toda la app.
