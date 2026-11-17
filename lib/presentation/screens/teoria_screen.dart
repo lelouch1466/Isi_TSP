@@ -134,17 +134,20 @@ class _TeoriaScreenState extends State<TeoriaScreen> {
           ),
 
           // Indicadores de página
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              teorias.length + 1,
-              (index) => Container(
-                margin: const EdgeInsets.all(5),
-                width: pagina_actual == index ? 15 : 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: pagina_actual == index ? Colors.blue : Colors.grey,
-                  borderRadius: BorderRadius.circular(10),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                teorias.length + 1,
+                (index) => Container(
+                  margin: const EdgeInsets.all(5),
+                  width: pagina_actual == index ? 15 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: pagina_actual == index ? Colors.blue : Colors.grey,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ),

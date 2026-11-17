@@ -8,6 +8,7 @@ import 'package:isi_tsp/presentation/components/mode_box.dart';
 import 'package:isi_tsp/presentation/core/appcolors.dart';
 import 'package:isi_tsp/presentation/core/text_styles.dart';
 import 'package:isi_tsp/presentation/screens/examen_screen.dart';
+import 'package:isi_tsp/presentation/screens/glosario_screen.dart';
 import 'package:isi_tsp/presentation/screens/leccion_map.dart';
 import 'package:isi_tsp/presentation/screens/question_screen.dart';
 import 'package:isi_tsp/presentation/screens/records_screen.dart';
@@ -53,16 +54,48 @@ class _HomeIsiState extends State<HomeIsi> {
       appBar: BarraApp.barrita("Home"),
       body: Column(
         children: [
-          GestureDetector(
-            onLongPress: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RecordsScreen()),
-              );
-            },
-            child: Image.asset("assets/images/wtmk.jpg"),
+          //se usa Stack para poner el boton del glosario encima de la imagen
+          Stack(
+            children: [
+              //la imagen va primero para que quede al fondo
+              GestureDetector(
+                onLongPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RecordsScreen(),
+                    ),
+                  );
+                },
+                child: Image.asset("assets/images/yaracat.png"),
+              ),
+              //boton glosario en la esquina superior izquierda
+              Positioned(
+                top: 8,
+                left: 8,
+                //Boton del glosario
+                child: FloatingActionButton.extended(
+                  //funcion del boton glosario
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => GlosarioScreen()),
+                    );
+                  },
+                  //cosas visuales
+                  backgroundColor: const Color.fromARGB(255, 243, 243, 243),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  icon: Icon(Icons.my_library_books_rounded),
+                  label: Text("Glosario"),
+                ),
+              ),
+            ],
           ),
-          Text("welcome to mario kart"),
+          Text(
+            "Bienvenido a Isi! \n Deja presionado al Gato para ver tus records.",
+          ),
 
           //---------------------*----------------------------
           StreamBuilder<List<Modulos>>(
@@ -75,6 +108,13 @@ class _HomeIsiState extends State<HomeIsi> {
                 return const Padding(
                   padding: EdgeInsets.all(16),
                   child: CircularProgressIndicator(),
+                );
+              }
+              //si la BD no tiene modulos se avisa en vez de dejar la lista vacia
+              if (snapshot.data!.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text("No se encontro ningun modulo"),
                 );
               }
               //---------------------*----------------------------
@@ -99,7 +139,12 @@ class _HomeIsiState extends State<HomeIsi> {
 
           //boton de siguiente
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsetsGeometry.only(
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: 50,
+            ),
             child: SizedBox(
               height: 60,
               width: double.infinity,
@@ -148,7 +193,7 @@ class _HomeIsiState extends State<HomeIsi> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("selecciona una opcion"),
+                        content: Text("Selecciona un módulo"),
                         behavior: SnackBarBehavior.floating,
                         margin: EdgeInsets.symmetric(vertical: 70),
                       ),
