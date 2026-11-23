@@ -130,7 +130,7 @@ class AppDatabase extends _$AppDatabase {
     await batch((b) {
       b.insertAll(modulos, [
         ModulosCompanion.insert(
-          nombre: 'papas y cebollas',
+          nombre: 'Fundamentos',
           bloqueado: const Value(false), //el primero empieza desbloqueado
         ),
         ModulosCompanion.insert(
@@ -240,8 +240,8 @@ class AppDatabase extends _$AppDatabase {
     //siguiente modulo por orden de id)
     final int idModuloEndless = await into(modulos).insert(
       ModulosCompanion.insert(
-        nombre: 'endless',
-        bloqueado: const Value(false),
+        nombre: 'Endless',
+        //bloqueado: const Value(false),
         //bloqueado no se pone: por defecto es true
       ),
     );
@@ -415,14 +415,9 @@ class AppDatabase extends _$AppDatabase {
   //(INNER JOIN puntaje_examen con modulos), ordenados por modulo
   Future<List<({PuntajeExamenData puntaje, String nombreModulo})>>
   obtenerPuntajesExamenConModulo() async {
-    final consulta =
-        select(puntajeExamen).join([
-            innerJoin(
-              modulos,
-              modulos.idModulo.equalsExp(puntajeExamen.idModulo),
-            ),
-          ])
-          ..orderBy([OrderingTerm(expression: puntajeExamen.idModulo)]);
+    final consulta = select(puntajeExamen).join([
+      innerJoin(modulos, modulos.idModulo.equalsExp(puntajeExamen.idModulo)),
+    ])..orderBy([OrderingTerm(expression: puntajeExamen.idModulo)]);
 
     final filas = await consulta.get();
 

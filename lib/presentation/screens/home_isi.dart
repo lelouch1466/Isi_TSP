@@ -95,6 +95,7 @@ class _HomeIsiState extends State<HomeIsi> {
           ),
           Text(
             "Bienvenido a Isi! \n Deja presionado al Gato para ver tus records.",
+            textAlign: TextAlign.center,
           ),
 
           //---------------------*----------------------------

@@ -45,3 +45,5 @@ class ModulosRepositorioImpl implements ModulosRepositorio {
         .toList();
   }
 }
+
+//poner en requerimientos funcionales si son de negocio, usuario o sistema

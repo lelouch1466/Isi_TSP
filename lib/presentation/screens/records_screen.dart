@@ -69,50 +69,54 @@ class _RecordsScreenState extends State<RecordsScreen> {
               .where((e) => e.moduloId == moduloEndlessId)
               .toList();
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                //---------------- rango ----------------
-                TarjetaRango(rangoJugador: rangoJugador),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 70),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  //---------------- rango ----------------
+                  TarjetaRango(rangoJugador: rangoJugador),
 
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                //---------------- cuestionarios ----------------
-                titulo_tabla("Cuestionarios"),
-                tabla(
-                  columnas: const ["Cuestionario", "Puntaje"],
-                  filas: [
-                    for (final p in puntajes_cuestionario)
-                      [p.nombreLeccion, "${p.puntaje}"],
-                  ],
-                  //linea gruesa donde empieza cada modulo
-                  filasNuevoModulo: filasNuevoModulo(puntajes_cuestionario),
-                ),
+                  //---------------- cuestionarios ----------------
+                  titulo_tabla("Cuestionarios"),
+                  tabla(
+                    columnas: const ["Cuestionario", "Puntaje"],
+                    filas: [
+                      for (final p in puntajes_cuestionario)
+                        [p.nombreLeccion, "${p.puntaje}"],
+                    ],
+                    //linea gruesa donde empieza cada modulo
+                    filasNuevoModulo: filasNuevoModulo(puntajes_cuestionario),
+                  ),
 
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                //---------------- examenes ----------------
-                titulo_tabla("Examenes"),
-                tabla(
-                  columnas: const ["Modulo", "Puntaje"],
-                  filas: [
-                    for (final e in examenes) [e.nombreModulo, "${e.puntaje}"],
-                  ],
-                ),
+                  //---------------- examenes ----------------
+                  titulo_tabla("Examenes"),
+                  tabla(
+                    columnas: const ["Modulo", "Puntaje"],
+                    filas: [
+                      for (final e in examenes)
+                        [e.nombreModulo, "${e.puntaje}"],
+                    ],
+                  ),
 
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                //---------------- endless ----------------
-                titulo_tabla("Endless"),
-                tabla(
-                  columnas: const ["Endless", "Puntaje"],
-                  filas: [
-                    for (final e in endless) [e.nombreModulo, "${e.puntaje}"],
-                  ],
-                ),
-              ],
+                  //---------------- endless ----------------
+                  titulo_tabla("Endless"),
+                  tabla(
+                    columnas: const ["Endless", "Puntaje"],
+                    filas: [
+                      for (final e in endless) [e.nombreModulo, "${e.puntaje}"],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },

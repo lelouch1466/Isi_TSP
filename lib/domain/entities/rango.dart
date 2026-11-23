@@ -5,11 +5,11 @@
 // si cambia algun limite o un nombre, se corrige aqui.
 enum Rango {
   noob('Noob', 1, 0),
-  amateur('Amateur', 2, 30),
-  veterano('Veterano', 3, 50),
-  pro('Pro', 4, 70),
-  legend('Legend', 5, 90),
-  god('God', 6, 100);
+  amateur('Ingeniero Amateur', 2, 30),
+  veterano('Ingeniero Veterano', 3, 50),
+  pro('Ingeniero Pro', 4, 70),
+  legend('Ingeniero Legend', 5, 90),
+  god('Ingeniero God', 6, 100);
 
   // nombre que se muestra en pantalla
   final String nombre;

@@ -98,7 +98,7 @@ class _TeoriaScreenState extends State<TeoriaScreen> {
                         const SizedBox(height: 20),
 
                         const Text(
-                          "¡Has terminado la teoría!",
+                          "¡Has terminado la teoría!\nToca la palomita para continuar",
                           style: TextStyle(
                             fontSize: 22,
                             color: Colors.green,

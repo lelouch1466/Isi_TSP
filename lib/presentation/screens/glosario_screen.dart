@@ -104,36 +104,39 @@ class _GlosarioScreenState extends State<GlosarioScreen> {
                 }
 
                 //ListView.builder solo construye los elementos visibles
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  itemCount: terminos.length,
-                  itemBuilder: (context, index) {
-                    final Glosarios termino = terminos[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          termino.termino,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 70),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    itemCount: terminos.length,
+                    itemBuilder: (context, index) {
+                      final Glosarios termino = terminos[index];
+                      return Card(
+                        child: ListTile(
+                          title: Text(
+                            termino.termino,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          //maximo 2 renglones; si no cabe termina en ...
+                          subtitle: Text(
+                            termino.descripcion,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          //al tocar el termino se abre en grande
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => TerminoBox(
+                                termino: termino.termino,
+                                descripcion: termino.descripcion,
+                              ),
+                            );
+                          },
                         ),
-                        //maximo 2 renglones; si no cabe termina en ...
-                        subtitle: Text(
-                          termino.descripcion,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        //al tocar el termino se abre en grande
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => TerminoBox(
-                              termino: termino.termino,
-                              descripcion: termino.descripcion,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               },
             ),
