@@ -130,13 +130,11 @@ class AppDatabase extends _$AppDatabase {
     await batch((b) {
       b.insertAll(modulos, [
         ModulosCompanion.insert(
-          nombre: 'Fundamentos',
+          nombre: 'Sistemas y Ciclo de Vida del Software',
           bloqueado: const Value(false), //el primero empieza desbloqueado
         ),
-        ModulosCompanion.insert(
-          nombre: 'Procesos y metodologías de desarrollo',
-        ),
-        ModulosCompanion.insert(nombre: 'Requisitos, diseño y pruebas'),
+        ModulosCompanion.insert(nombre: 'Definición de Ingeniería de Software'),
+        ModulosCompanion.insert(nombre: 'Dominios de Aplicación'),
       ]);
     });
 
@@ -241,7 +239,7 @@ class AppDatabase extends _$AppDatabase {
     final int idModuloEndless = await into(modulos).insert(
       ModulosCompanion.insert(
         nombre: 'Endless',
-        //bloqueado: const Value(false),
+        //wbloqueado: const Value(false),
         //bloqueado no se pone: por defecto es true
       ),
     );
